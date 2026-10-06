@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ПринтШоп — Каталог футболок</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Шапка сайта -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">👕</span>
+        Принт<span>Шоп</span>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link active">Каталог</a>
+        <a href="constructor.html" class="nav-link">Конструктор</a>
+        <a href="order.html" class="nav-link">Заказ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Главный баннер -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Создай свою <em>уникальную</em> футболку</h1>
+      <p>Загрузи свой дизайн, выбери цвет и размер — мы напечатаем за 2–3 дня и доставим по всей России</p>
+      <div class="hero-actions">
+        <a href="constructor.html" class="btn btn-accent btn-lg">🎨 Начать создавать</a>
+        <a href="#catalog" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.5)">Смотреть каталог</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Преимущества -->
+  <section class="features-section">
+    <div class="features-inner">
+      <div class="section-header" style="justify-content:center;text-align:center">
+        <h2 class="section-title">Почему выбирают <span>нас</span></h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">🖨️</div>
+          <h3>Качественная печать</h3>
+          <p>DTF-печать сохраняет яркость цветов после 100+ стирок</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">⚡</div>
+          <h3>Быстрое производство</h3>
+          <p>Готовим заказ от 2 рабочих дней</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📦</div>
+          <h3>Доставка по России</h3>
+          <p>Отправляем СДЭК и Почтой России во все регионы</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎨</div>
+          <h3>Любой дизайн</h3>
+          <p>Поддерживаем PNG, JPG, SVG с прозрачным фоном</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Каталог товаров -->
+  <section class="catalog-section" id="catalog">
+    <div class="section-header">
+      <h2 class="section-title">Каталог <span>футболок</span></h2>
+      <span style="font-size:0.9rem;color:var(--color-text-muted)">8 моделей</span>
+    </div>
+
+    <div class="product-grid">
+
+      <!-- Товар 1 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <span class="product-badge">Хит</span>
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#3b82f6" stroke="#2563eb" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#2563eb" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Базовая серия</div>
+          <div class="product-name">Классика Синяя</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#3b82f6" title="Синий"></div>
+              <div class="color-dot" style="background:#1e3a8a" title="Тёмно-синий"></div>
+              <div class="color-dot" style="background:#93c5fd" title="Голубой"></div>
+            </div>
+            <div class="product-sizes">S, M, L, XL, XXL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 2 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#0f172a" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Базовая серия</div>
+          <div class="product-name">Чёрный стандарт</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#1e293b" title="Чёрный"></div>
+              <div class="color-dot" style="background:#334155" title="Тёмно-серый"></div>
+              <div class="color-dot" style="background:#64748b" title="Серый"></div>
+            </div>
+            <div class="product-sizes">XS, S, M, L, XL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 390 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 3 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <span class="product-badge">Новинка</span>
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#f97316" stroke="#ea6c0a" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#ea6c0a" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Яркая серия</div>
+          <div class="product-name">Оранжевый заряд</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#f97316" title="Оранжевый"></div>
+              <div class="color-dot" style="background:#fb923c" title="Светло-оранжевый"></div>
+              <div class="color-dot" style="background:#fbbf24" title="Жёлтый"></div>
+            </div>
+            <div class="product-sizes">S, M, L, XL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 4 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#cbd5e1" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Базовая серия</div>
+          <div class="product-name">Белоснежная</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#f8fafc;border:1px solid #e2e8f0" title="Белый"></div>
+              <div class="color-dot" style="background:#f1f5f9" title="Молочный"></div>
+              <div class="color-dot" style="background:#e2e8f0" title="Светло-серый"></div>
+            </div>
+            <div class="product-sizes">XS, S, M, L, XL, XXL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 290 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 5 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <span class="product-badge">Скидка</span>
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#22c55e" stroke="#16a34a" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#16a34a" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Яркая серия</div>
+          <div class="product-name">Зелёный лес</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#22c55e" title="Зелёный"></div>
+              <div class="color-dot" style="background:#16a34a" title="Тёмно-зелёный"></div>
+              <div class="color-dot" style="background:#86efac" title="Светло-зелёный"></div>
+            </div>
+            <div class="product-sizes">S, M, L, XL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">990 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 6 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#a855f7" stroke="#9333ea" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#9333ea" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Яркая серия</div>
+          <div class="product-name">Фиолетовая мечта</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#a855f7" title="Фиолетовый"></div>
+              <div class="color-dot" style="background:#7c3aed" title="Тёмно-фиолетовый"></div>
+              <div class="color-dot" style="background:#d8b4fe" title="Лавандовый"></div>
+            </div>
+            <div class="product-sizes">XS, S, M, L, XL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 7 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#dc2626" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Яркая серия</div>
+          <div class="product-name">Красный флаг</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#ef4444" title="Красный"></div>
+              <div class="color-dot" style="background:#b91c1c" title="Тёмно-красный"></div>
+              <div class="color-dot" style="background:#fca5a5" title="Розовый"></div>
+            </div>
+            <div class="product-sizes">S, M, L, XL, XXL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Товар 8 -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <span class="product-badge">Новинка</span>
+          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#d97706" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Базовая серия</div>
+          <div class="product-name">Янтарный свет</div>
+          <div class="product-meta">
+            <div class="product-colors">
+              <div class="color-dot" style="background:#f59e0b" title="Янтарный"></div>
+              <div class="color-dot" style="background:#fbbf24" title="Жёлтый"></div>
+              <div class="color-dot" style="background:#fde68a" title="Светло-жёлтый"></div>
+            </div>
+            <div class="product-sizes">S, M, L, XL</div>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
+            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer class="site-footer">
+    <p>© 2024 ПринтШоп — Принт на футболках с доставкой по России</p>
+    <p style="margin-top:8px;font-size:0.85rem">
+      <a href="index.html">Каталог</a> &nbsp;·&nbsp;
+      <a href="constructor.html">Конструктор</a> &nbsp;·&nbsp;
+      <a href="order.html">Оформить заказ</a>
+    </p>
+  </footer>
+
+</body>
+</html>

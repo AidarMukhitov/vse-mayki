@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оформление заказа — ПринтШоп</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Fabric.js нужен для отрисовки превью заказа -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body>
+
+  <!-- Шапка -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">👕</span>
+        Принт<span>Шоп</span>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link">Каталог</a>
+        <a href="constructor.html" class="nav-link">Конструктор</a>
+        <a href="order.html" class="nav-link active">Заказ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Основной контент страницы -->
+  <div class="order-page">
+    <h1 class="order-page-title">Оформление заказа</h1>
+    <p class="order-page-subtitle">Заполните данные для доставки и выберите способ оплаты</p>
+
+    <div class="order-layout">
+
+      <!-- Левая колонка: форма заказа -->
+      <div>
+        <form id="order-form" novalidate>
+          <div class="order-form-card">
+
+            <!-- Секция 1: Контактные данные -->
+            <div class="form-section">
+              <div class="form-section-title">
+                <div class="form-section-num">1</div>
+                Контактные данные
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="first-name">Имя <span class="req">*</span></label>
+                  <input type="text" id="first-name" name="firstName" placeholder="Иван" autocomplete="given-name">
+                  <span class="field-error" id="first-name-error">Введите имя</span>
+                </div>
+                <div class="form-group">
+                  <label for="last-name">Фамилия <span class="req">*</span></label>
+                  <input type="text" id="last-name" name="lastName" placeholder="Иванов" autocomplete="family-name">
+                  <span class="field-error" id="last-name-error">Введите фамилию</span>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top:14px">
+                <div class="form-group">
+                  <label for="phone">Телефон <span class="req">*</span></label>
+                  <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" autocomplete="tel">
+                  <span class="field-error" id="phone-error">Введите корректный телефон</span>
+                </div>
+                <div class="form-group">
+                  <label for="email">E-mail <span class="req">*</span></label>
+                  <input type="email" id="email" name="email" placeholder="ivan@example.com" autocomplete="email">
+                  <span class="field-error" id="email-error">Введите корректный e-mail</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Секция 2: Доставка -->
+            <div class="form-section">
+              <div class="form-section-title">
+                <div class="form-section-num">2</div>
+                Способ доставки
+              </div>
+
+              <div class="delivery-options">
+                <!-- Вариант: СДЭК -->
+                <label class="delivery-option">
+                  <input type="radio" name="delivery" value="cdek" checked>
+                  <div class="delivery-option-info">
+                    <div class="delivery-option-name">СДЭК — до пункта выдачи</div>
+                    <div class="delivery-option-desc">3–7 рабочих дней, более 5000 пунктов выдачи</div>
+                  </div>
+                  <div class="delivery-option-price" data-price="290">290 ₽</div>
+                </label>
+
+                <!-- Вариант: Почта России -->
+                <label class="delivery-option">
+                  <input type="radio" name="delivery" value="post">
+                  <div class="delivery-option-info">
+                    <div class="delivery-option-name">Почта России — до двери</div>
+                    <div class="delivery-option-desc">7–14 рабочих дней, по всей России</div>
+                  </div>
+                  <div class="delivery-option-price" data-price="190">190 ₽</div>
+                </label>
+
+                <!-- Вариант: Курьер -->
+                <label class="delivery-option">
+                  <input type="radio" name="delivery" value="courier">
+                  <div class="delivery-option-info">
+                    <div class="delivery-option-name">Курьер — до двери (Москва/СПб)</div>
+                    <div class="delivery-option-desc">1–3 рабочих дня, только Москва и Санкт-Петербург</div>
+                  </div>
+                  <div class="delivery-option-price" data-price="490">490 ₽</div>
+                </label>
+              </div>
+
+              <!-- Адрес доставки -->
+              <div style="margin-top:16px">
+                <div class="form-row full">
+                  <div class="form-group">
+                    <label for="city">Город <span class="req">*</span></label>
+                    <input type="text" id="city" name="city" placeholder="Москва" autocomplete="address-level2">
+                    <span class="field-error" id="city-error">Введите город</span>
+                  </div>
+                </div>
+                <div class="form-row full" style="margin-top:14px">
+                  <div class="form-group">
+                    <label for="address">Адрес <span class="req">*</span></label>
+                    <input type="text" id="address" name="address" placeholder="ул. Пушкина, д. 10, кв. 5" autocomplete="street-address">
+                    <span class="field-error" id="address-error">Введите адрес</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Секция 3: Оплата -->
+            <div class="form-section">
+              <div class="form-section-title">
+                <div class="form-section-num">3</div>
+                Способ оплаты
+              </div>
+
+              <div class="payment-options">
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="card" checked>
+                  <span class="payment-icon">💳</span>
+                  <span class="payment-name">Карта онлайн</span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="sbp">
+                  <span class="payment-icon">📲</span>
+                  <span class="payment-name">СБП</span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="cash">
+                  <span class="payment-icon">💵</span>
+                  <span class="payment-name">При получении</span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="invoice">
+                  <span class="payment-icon">🧾</span>
+                  <span class="payment-name">По счёту (юр. лицо)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Секция 4: Комментарий -->
+            <div class="form-section">
+              <div class="form-section-title">
+                <div class="form-section-num">4</div>
+                Комментарий к заказу
+              </div>
+              <div class="form-row full">
+                <div class="form-group">
+                  <label for="comment">Пожелания (необязательно)</label>
+                  <textarea id="comment" name="comment" placeholder="Например: позвоните перед доставкой, или особые пожелания по упаковке..."></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Правая колонка: сводка заказа -->
+      <div>
+        <div class="order-sidebar-card">
+          <div class="sidebar-header">
+            <h3>Ваш заказ</h3>
+          </div>
+
+          <!-- Превью дизайна -->
+          <div class="sidebar-preview">
+            <div class="preview-tshirt">
+              <!-- Канвас для отображения превью заказа -->
+              <canvas id="order-preview-canvas" width="100" height="120"></canvas>
+              <div class="preview-info">
+                <div class="preview-item-name" id="preview-name">Футболка с принтом</div>
+                <div class="preview-item-detail" id="preview-color">
+                  <span class="color-badge" id="preview-color-badge" style="background:#f8fafc;border-color:#e2e8f0"></span>
+                  <span id="preview-color-name">Белый</span>
+                </div>
+                <div class="preview-item-detail" id="preview-size">
+                  Размер: <strong id="preview-size-val">M</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Суммы -->
+          <div class="sidebar-totals">
+            <div class="sidebar-total-row">
+              <span>Футболка</span>
+              <span>1 490 ₽</span>
+            </div>
+            <div class="sidebar-total-row">
+              <span>Нанесение принта</span>
+              <span>290 ₽</span>
+            </div>
+            <div class="sidebar-total-row">
+              <span>Доставка</span>
+              <span id="delivery-cost-display">290 ₽</span>
+            </div>
+            <div class="sidebar-total-row">
+              <span>Итого</span>
+              <span id="total-display">2 070 ₽</span>
+            </div>
+          </div>
+
+          <!-- Кнопка подтверждения -->
+          <div class="sidebar-submit">
+            <button type="submit" form="order-form" class="btn btn-accent btn-lg btn-full" id="submit-btn">
+              Подтвердить заказ
+            </button>
+            <div style="font-size:0.78rem;color:var(--color-text-muted);text-align:center;margin-top:10px">
+              Нажимая кнопку, вы соглашаетесь с
+              <a href="#" style="color:var(--color-primary)">условиями оферты</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ссылка назад -->
+        <div style="text-align:center;margin-top:16px">
+          <a href="constructor.html" style="font-size:0.875rem;color:var(--color-text-muted)">
+            ← Вернуться к редактированию дизайна
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Подвал -->
+  <footer class="site-footer">
+    <p>© 2024 ПринтШоп — Принт на футболках с доставкой по России</p>
+  </footer>
+
+  <!-- Оверлей успешного заказа -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <h2>Заказ оформлен!</h2>
+      <p>Спасибо за заказ. Мы получили вашу заявку и скоро свяжемся с вами.</p>
+      <div class="order-number" id="order-number-display">#ORD-00000</div>
+      <p style="font-size:0.9rem">Подтверждение будет отправлено на указанный e-mail</p>
+      <div class="success-actions" style="margin-top:24px">
+        <a href="index.html" class="btn btn-primary">В каталог</a>
+        <a href="constructor.html" class="btn btn-ghost">Создать ещё</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Скрипт страницы заказа -->
+  <script>
+    /* ========================================
+       Скрипт страницы оформления заказа
+       ======================================== */
+
+    // ── Загрузка сохранённого дизайна из localStorage ──────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // Читаем данные дизайна, сохранённые конструктором
+      const savedDesign = JSON.parse(localStorage.getItem('tshirtDesign') || '{}');
+      const tshirtColor  = savedDesign.color || '#f8fafc';
+      const tshirtSize   = savedDesign.size  || 'M';
+      const colorName    = savedDesign.colorName || 'Белый';
+
+      // Обновляем превью в сайдбаре
+      document.getElementById('preview-color-badge').style.background = tshirtColor;
+      document.getElementById('preview-color-name').textContent = colorName;
+      document.getElementById('preview-size-val').textContent = tshirtSize;
+
+      // ── Отрисовка мини-превью футболки на канвасе ──────────────────────
+      drawPreviewCanvas(tshirtColor, savedDesign.imageDataUrl);
+
+      // ── Пересчёт стоимости при смене доставки ──────────────────────────
+      document.querySelectorAll('input[name="delivery"]').forEach(function (radio) {
+        radio.addEventListener('change', updateTotal);
+      });
+
+      updateTotal();
+
+      // ── Обработчик формы ───────────────────────────────────────────────
+      document.getElementById('order-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (validateForm()) {
+          submitOrder();
+        }
+      });
+    });
+
+    // ── Рисуем мини-превью футболки ────────────────────────────────────────
+    function drawPreviewCanvas(color, imageDataUrl) {
+      const canvas = document.getElementById('order-preview-canvas');
+      const ctx    = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Рисуем силуэт футболки
+      ctx.fillStyle = color;
+      ctx.strokeStyle = darkenColor(color, 20);
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      // Тело футболки
+      ctx.moveTo(W * 0.28, H * 0.14);
+      ctx.lineTo(W * 0.05, H * 0.32);
+      ctx.lineTo(W * 0.20, H * 0.38);
+      ctx.lineTo(W * 0.18, H * 0.88);
+      ctx.lineTo(W * 0.82, H * 0.88);
+      ctx.lineTo(W * 0.80, H * 0.38);
+      ctx.lineTo(W * 0.95, H * 0.32);
+      ctx.lineTo(W * 0.72, H * 0.14);
+      // Горловина
+      ctx.quadraticCurveTo(W * 0.60, H * 0.22, W * 0.50, H * 0.22);
+      ctx.quadraticCurveTo(W * 0.40, H * 0.22, W * 0.28, H * 0.14);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Если есть сохранённое изображение — рисуем его поверх
+      if (imageDataUrl) {
+        const img = new Image();
+        img.onload = function () {
+          const maxW = W * 0.5;
+          const maxH = H * 0.4;
+          const scale = Math.min(maxW / img.width, maxH / img.height);
+          const iw = img.width  * scale;
+          const ih = img.height * scale;
+          const ix = (W - iw) / 2;
+          const iy = H * 0.38;
+          ctx.drawImage(img, ix, iy, iw, ih);
+        };
+        img.src = imageDataUrl;
+      }
+    }
+
+    // ── Вспомогательная функция: затемнить hex-цвет ───────────────────────
+    function darkenColor(hex, amount) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      let r = Math.max(0, parseInt(hex.slice(0,2), 16) - amount);
+      let g = Math.max(0, parseInt(hex.slice(2,4), 16) - amount);
+      let b = Math.max(0, parseInt(hex.slice(4,6), 16) - amount);
+      return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+    }
+
+    // ── Пересчёт итоговой суммы ────────────────────────────────────────────
+    function updateTotal() {
+      const selected = document.querySelector('input[name="delivery"]:checked');
+      const deliveryLabel = selected ? selected.closest('.delivery-option') : null;
+      const priceEl = deliveryLabel ? deliveryLabel.querySelector('.delivery-option-price') : null;
+      const deliveryCost = priceEl ? parseInt(priceEl.dataset.price) : 290;
+
+      const base  = 1490 + 290; // футболка + печать
+      const total = base + deliveryCost;
+
+      document.getElementById('delivery-cost-display').textContent = deliveryCost + ' ₽';
+      document.getElementById('total-display').textContent = formatPrice(total) + ' ₽';
+    }
+
+    // ── Форматирование числа с пробелом-разделителем ──────────────────────
+    function formatPrice(n) {
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    // ── Валидация формы ────────────────────────────────────────────────────
+    function validateForm() {
+      let valid = true;
+
+      // Список полей для проверки: [id поля, id блока ошибки, функция проверки]
+      const fields = [
+        ['first-name',  'first-name-error',  v => v.trim().length >= 2],
+        ['last-name',   'last-name-error',   v => v.trim().length >= 2],
+        ['phone',       'phone-error',       v => /^[\d\s\+\-\(\)]{7,}$/.test(v.trim())],
+        ['email',       'email-error',       v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())],
+        ['city',        'city-error',        v => v.trim().length >= 2],
+        ['address',     'address-error',     v => v.trim().length >= 5],
+      ];
+
+      fields.forEach(function ([fieldId, errorId, checkFn]) {
+        const input    = document.getElementById(fieldId);
+        const errorEl  = document.getElementById(errorId);
+        const isValid  = checkFn(input.value);
+
+        input.classList.toggle('error', !isValid);
+        errorEl.classList.toggle('visible', !isValid);
+
+        if (!isValid) valid = false;
+      });
+
+      return valid;
+    }
+
+    // ── Отправка заказа ───────────────────────────────────────────────────
+    function submitOrder() {
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Оформляем...';
+
+      // Имитация сетевого запроса
+      setTimeout(function () {
+        // Генерируем случайный номер заказа
+        const orderNum = '#ORD-' + Math.floor(10000 + Math.random() * 90000);
+        document.getElementById('order-number-display').textContent = orderNum;
+
+        // Очищаем сохранённый дизайн
+        localStorage.removeItem('tshirtDesign');
+
+        // Показываем оверлей с успехом
+        document.getElementById('success-overlay').classList.add('visible');
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>

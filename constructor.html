@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Конструктор футболки — ПринтШоп</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Fabric.js — библиотека для работы с Canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body class="constructor-page">
+
+  <!-- Шапка конструктора с индикатором шагов -->
+  <header class="constructor-header">
+    <a href="index.html" class="logo">
+      <span class="logo-icon">👕</span>
+      Принт<span style="color:var(--color-primary)">Шоп</span>
+    </a>
+
+    <!-- Индикатор текущего шага -->
+    <div class="constructor-steps">
+      <div class="step-item active">
+        <div class="step-num">1</div>
+        <span>Дизайн</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <span>Заказ</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <span>Оплата</span>
+      </div>
+    </div>
+
+    <a href="index.html" class="btn btn-ghost btn-sm">← Каталог</a>
+  </header>
+
+  <!-- Основной layout конструктора -->
+  <div class="constructor-layout">
+
+    <!-- Левая часть: область с канвасом -->
+    <div class="canvas-area">
+      <div class="canvas-wrapper">
+        <canvas id="tshirt-canvas"></canvas>
+        <div class="canvas-hint" id="canvas-hint">Загрузите изображение, чтобы начать</div>
+      </div>
+    </div>
+
+    <!-- Правая часть: панель управления -->
+    <aside class="constructor-panel">
+
+      <!-- Секция: информация о модели -->
+      <div class="panel-section">
+        <div class="panel-title">Конструктор футболки</div>
+        <div class="panel-subtitle">Настройте свой уникальный дизайн</div>
+      </div>
+
+      <!-- Секция: выбор цвета футболки -->
+      <div class="panel-section">
+        <div class="panel-label">Цвет футболки</div>
+        <div class="color-options">
+          <div class="color-option selected" style="background:#f8fafc;border:2px solid #e2e8f0"
+               data-color="#f8fafc" data-name="Белый" title="Белый"></div>
+          <div class="color-option" style="background:#1e293b"
+               data-color="#1e293b" data-name="Чёрный" title="Чёрный"></div>
+          <div class="color-option" style="background:#3b82f6"
+               data-color="#3b82f6" data-name="Синий" title="Синий"></div>
+          <div class="color-option" style="background:#ef4444"
+               data-color="#ef4444" data-name="Красный" title="Красный"></div>
+          <div class="color-option" style="background:#22c55e"
+               data-color="#22c55e" data-name="Зелёный" title="Зелёный"></div>
+          <div class="color-option" style="background:#f97316"
+               data-color="#f97316" data-name="Оранжевый" title="Оранжевый"></div>
+          <div class="color-option" style="background:#a855f7"
+               data-color="#a855f7" data-name="Фиолетовый" title="Фиолетовый"></div>
+          <div class="color-option" style="background:#f59e0b"
+               data-color="#f59e0b" data-name="Жёлтый" title="Жёлтый"></div>
+        </div>
+        <div style="margin-top:10px;font-size:0.82rem;color:var(--color-text-muted)">
+          Выбрано: <strong id="selected-color-name">Белый</strong>
+        </div>
+      </div>
+
+      <!-- Секция: выбор размера -->
+      <div class="panel-section">
+        <div class="panel-label">Размер</div>
+        <div class="size-options">
+          <button class="size-option" data-size="XS">XS</button>
+          <button class="size-option selected" data-size="M">M</button>
+          <button class="size-option" data-size="L">L</button>
+          <button class="size-option" data-size="XL">XL</button>
+          <button class="size-option" data-size="XXL">XXL</button>
+        </div>
+      </div>
+
+      <!-- Секция: загрузка изображения -->
+      <div class="panel-section">
+        <div class="panel-label">Ваш дизайн</div>
+
+        <!-- Зона перетаскивания файла -->
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-icon">🖼️</div>
+          <p><strong>Нажмите или перетащите</strong> файл сюда</p>
+          <p class="upload-note">PNG, JPG, GIF до 10 МБ. Лучший результат — PNG с прозрачным фоном</p>
+          <input type="file" id="image-input" accept="image/*" style="display:none">
+        </div>
+      </div>
+
+      <!-- Секция: управление изображением (появляется после загрузки) -->
+      <div class="panel-section" id="image-controls" style="display:none">
+        <div class="panel-label">Управление изображением</div>
+
+        <!-- Ползунок масштаба -->
+        <div style="margin-bottom:16px">
+          <div style="font-size:0.82rem;color:var(--color-text-muted);margin-bottom:8px">Масштаб</div>
+          <div class="scale-control">
+            <span class="scale-icon">🔍−</span>
+            <input type="range" id="scale-slider" min="10" max="200" value="100">
+            <span class="scale-icon">🔍+</span>
+            <span class="scale-value" id="scale-value">100%</span>
+          </div>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="image-actions">
+          <button class="btn btn-ghost btn-sm" id="center-btn" title="Центрировать изображение">
+            ⊞ По центру
+          </button>
+          <button class="btn btn-danger btn-sm" id="remove-image-btn" title="Удалить изображение">
+            🗑 Удалить
+          </button>
+        </div>
+      </div>
+
+      <!-- Секция: сводка и кнопка заказа -->
+      <div class="panel-section" style="margin-top:auto">
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>Футболка</span>
+            <span>1 490 ₽</span>
+          </div>
+          <div class="summary-row">
+            <span>Нанесение принта</span>
+            <span>290 ₽</span>
+          </div>
+          <div class="summary-row">
+            <span><strong>Итого</strong></span>
+            <span><strong>1 780 ₽</strong></span>
+          </div>
+        </div>
+
+        <button class="btn btn-accent btn-lg btn-full" id="order-btn">
+          Оформить заказ →
+        </button>
+        <div style="font-size:0.78rem;color:var(--color-text-muted);text-align:center;margin-top:8px">
+          Производство 2–3 рабочих дня
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Подключаем скрипт конструктора -->
+  <script src="js/constructor.js"></script>
+
+</body>
+</html>
