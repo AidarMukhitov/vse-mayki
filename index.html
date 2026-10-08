@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ПринтШоп — Каталог футболок</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,7 +16,7 @@
     <div class="header-inner">
       <a href="index.html" class="logo">
         <span class="logo-icon">👕</span>
-        Принт<span>Шоп</span>
+        Абраров<span>Азат</span>
       </a>
       <nav class="header-nav">
         <a href="index.html" class="nav-link active">Каталог</a>
@@ -26,6 +29,7 @@
   <!-- Главный баннер -->
   <section class="hero">
     <div class="hero-inner">
+      <div class="hero-kicker">Печать на футболках · DTF · 2–3 дня</div>
       <h1>Создай свою <em>уникальную</em> футболку</h1>
       <p>Загрузи свой дизайн, выбери цвет и размер — мы напечатаем за 2–3 дня и доставим по всей России</p>
       <div class="hero-actions">
@@ -34,6 +38,14 @@
       </div>
     </div>
   </section>
+
+  <!-- Бегущая строка (контент продублирован для бесшовной анимации) -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Свой принт</span><span>Любой цвет</span><span>XS — XXL</span><span>Доставка по России</span><span>100+ стирок</span>
+      <span>Свой принт</span><span>Любой цвет</span><span>XS — XXL</span><span>Доставка по России</span><span>100+ стирок</span>
+    </div>
+  </div>
 
   <!-- Преимущества -->
   <section class="features-section">
@@ -292,6 +304,7 @@
 
   <!-- Подвал -->
   <footer class="site-footer">
+    <div class="footer-logo">Принт<span>Шоп</span></div>
     <p>© 2024 ПринтШоп — Принт на футболках с доставкой по России</p>
     <p style="margin-top:8px;font-size:0.85rem">
       <a href="index.html">Каталог</a> &nbsp;·&nbsp;

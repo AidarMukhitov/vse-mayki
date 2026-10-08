@@ -57,7 +57,7 @@
     const strokeColor = darkenHex(color, 25);
 
     // Тень под футболкой
-    fabricCanvas.setBackgroundColor('#e8edf3', fabricCanvas.renderAll.bind(fabricCanvas));
+    fabricCanvas.setBackgroundColor('#161616', fabricCanvas.renderAll.bind(fabricCanvas));
 
     // Строим путь силуэта футболки через Fabric Path
     const W = CANVAS_W;
@@ -84,7 +84,7 @@
         evented:         false,
         _isTshirt:       true,   // маркер, чтобы отличать от пользовательских объектов
         shadow:          new fabric.Shadow({
-          color:   'rgba(0,0,0,0.18)',
+          color:   'rgba(0,0,0,0.55)',
           blur:    20,
           offsetX: 0,
           offsetY: 8,
@@ -102,7 +102,7 @@
       width:         PRINT_ZONE.w,
       height:        PRINT_ZONE.h,
       fill:          'transparent',
-      stroke:        'rgba(37,99,235,0.25)',
+      stroke:        'rgba(204,255,0,0.45)',
       strokeWidth:   1.5,
       strokeDashArray: [6, 4],
       selectable:    false,
@@ -176,8 +176,8 @@
           hasControls: true,       // рамка с ручками управления
           hasBorders:  true,
           cornerStyle: 'circle',
-          cornerColor: '#2563eb',
-          cornerStrokeColor: '#fff',
+          cornerColor: '#ccff00',
+          cornerStrokeColor: '#0a0a0a',
           transparentCorners: false,
           cornerSize: 10,
           _isUserImage: true,      // маркер пользовательского изображения
