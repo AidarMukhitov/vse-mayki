@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Конструктор футболки — ПринтШоп</title>
+  <title>Конструктор футболки — Отпечаток</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
   <header class="constructor-header">
     <a href="index.html" class="logo">
       <span class="logo-icon">👕</span>
-      Абраров<span style="color:var(--color-primary)">Азат</span>
+      <span class="logo-text">Отпе<span>чаток</span></span>
     </a>
 
     <!-- Индикатор текущего шага -->
@@ -34,11 +34,24 @@
       <div class="step-sep"></div>
       <div class="step-item">
         <div class="step-num">3</div>
-        <span>Оплата</span>
+        <span>Отправка</span>
       </div>
     </div>
 
     <a href="index.html" class="btn btn-ghost btn-sm">← Каталог</a>
+
+    <!-- Иконки для связи (правый верхний угол) -->
+    <div class="header-contacts">
+      <a href="https://t.me/otpechatok2026" class="contact-icon contact-tg" target="_blank" rel="noopener" title="Написать в Telegram" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>
+      </a>
+      <a href="https://max.ru/u/f9LHodD0cOIgjAVARDTdaLvMcvCjjruRHgg4lTVO7Qiw9lMjBdiZENwcmHU" class="contact-icon contact-max" target="_blank" rel="noopener" title="Написать в MAX" aria-label="MAX">
+        <span>MAX</span>
+      </a>
+      <a href="https://vk.com/club240887057" class="contact-icon contact-vk" target="_blank" rel="noopener" title="Мы ВКонтакте" aria-label="ВКонтакте">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.8 17.5C6.3 17.5 2.6 13 2.4 5.6h3.3c.1 5.4 2.5 7.7 4.4 8.2V5.6h3.1v4.7c1.9-.2 3.9-2.3 4.5-4.7h3.1c-.5 2.9-2.6 5-4.1 5.9 1.5.7 3.9 2.6 4.8 5.9h-3.4c-.7-2.3-2.6-4-4.9-4.3v4.3h-.4z"/></svg>
+      </a>
+    </div>
   </header>
 
   <!-- Основной layout конструктора -->
@@ -46,8 +59,22 @@
 
     <!-- Левая часть: область с канвасом -->
     <div class="canvas-area">
-      <div class="canvas-wrapper">
-        <canvas id="tshirt-canvas"></canvas>
+
+      <!-- Переключатель сторон футболки: у каждой стороны свой Canvas и свой дизайн -->
+      <div class="side-toggle" role="tablist" aria-label="Сторона футболки">
+        <button type="button" class="side-btn active" data-side="front" role="tab" aria-selected="true">Перед</button>
+        <button type="button" class="side-btn" data-side="back" role="tab" aria-selected="false">Спина</button>
+      </div>
+
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        <!-- Лицевая сторона -->
+        <div class="canvas-side" id="side-front">
+          <canvas id="canvas-front"></canvas>
+        </div>
+        <!-- Тыльная сторона (скрыта, пока не выбрана) -->
+        <div class="canvas-side" id="side-back" hidden>
+          <canvas id="canvas-back"></canvas>
+        </div>
         <div class="canvas-hint" id="canvas-hint">Загрузите изображение, чтобы начать</div>
       </div>
     </div>
@@ -101,15 +128,17 @@
 
       <!-- Секция: загрузка изображения -->
       <div class="panel-section">
-        <div class="panel-label">Ваш дизайн</div>
+        <div class="panel-label">Ваш дизайн — <span id="upload-side-label">перед</span></div>
 
         <!-- Зона перетаскивания файла -->
         <div class="upload-zone" id="upload-zone">
           <div class="upload-icon">🖼️</div>
           <p><strong>Нажмите или перетащите</strong> файл сюда</p>
-          <p class="upload-note">PNG, JPG, GIF до 10 МБ. Лучший результат — PNG с прозрачным фоном</p>
+          <p class="upload-note">PNG, JPG, GIF до 25 МБ и не больше 3508×4961 px (A3, 300 DPI). Лучший результат — PNG с прозрачным фоном</p>
           <input type="file" id="image-input" accept="image/*" style="display:none">
         </div>
+        <!-- Сообщение об ошибке загрузки (слишком большое изображение и т.п.) -->
+        <div class="upload-error" id="upload-error" role="alert" hidden></div>
       </div>
 
       <!-- Секция: управление изображением (появляется после загрузки) -->

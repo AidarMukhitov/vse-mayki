@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Оформление заказа — ПринтШоп</title>
+  <title>Оформление заказа — Отпечаток</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <!-- Fabric.js нужен для отрисовки превью заказа -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <!-- jsPDF — генерация PDF с макетами футболки прямо в браузере -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -18,29 +18,45 @@
     <div class="header-inner">
       <a href="index.html" class="logo">
         <span class="logo-icon">👕</span>
-        Принт<span>Шоп</span>
+        <span class="logo-text">Отпе<span>чаток</span></span>
       </a>
       <nav class="header-nav">
         <a href="index.html" class="nav-link">Каталог</a>
         <a href="constructor.html" class="nav-link">Конструктор</a>
         <a href="order.html" class="nav-link active">Заказ</a>
       </nav>
+      <!-- Иконки для связи (правый верхний угол) -->
+      <div class="header-contacts">
+        <a href="https://t.me/otpechatok2026" class="contact-icon contact-tg" target="_blank" rel="noopener" title="Написать в Telegram" aria-label="Telegram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>
+        </a>
+        <a href="https://max.ru/u/f9LHodD0cOIgjAVARDTdaLvMcvCjjruRHgg4lTVO7Qiw9lMjBdiZENwcmHU" class="contact-icon contact-max" target="_blank" rel="noopener" title="Написать в MAX" aria-label="MAX">
+          <span>MAX</span>
+        </a>
+        <a href="https://vk.com/club240887057" class="contact-icon contact-vk" target="_blank" rel="noopener" title="Мы ВКонтакте" aria-label="ВКонтакте">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.8 17.5C6.3 17.5 2.6 13 2.4 5.6h3.3c.1 5.4 2.5 7.7 4.4 8.2V5.6h3.1v4.7c1.9-.2 3.9-2.3 4.5-4.7h3.1c-.5 2.9-2.6 5-4.1 5.9 1.5.7 3.9 2.6 4.8 5.9h-3.4c-.7-2.3-2.6-4-4.9-4.3v4.3h-.4z"/></svg>
+        </a>
+      </div>
     </div>
   </header>
 
   <!-- Основной контент страницы -->
   <div class="order-page">
     <h1 class="order-page-title">Оформление заказа</h1>
-    <p class="order-page-subtitle">Заполните данные для доставки и выберите способ оплаты</p>
+    <p class="order-page-subtitle">Оставьте контакты — мы свяжемся с вами, чтобы уточнить детали заказа</p>
 
     <div class="order-layout">
 
-      <!-- Левая колонка: форма заказа -->
+      <!-- Левая колонка: форма с контактами -->
       <div>
-        <form id="order-form" novalidate>
+        <form id="order-form" name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+          <!-- Служебные поля Netlify Forms -->
+          <input type="hidden" name="form-name" value="order" />
+          <p style="display:none"><label>Не заполняйте: <input name="bot-field" /></label></p>
+
           <div class="order-form-card">
 
-            <!-- Секция 1: Контактные данные -->
+            <!-- Секция 1: обязательные контакты -->
             <div class="form-section">
               <div class="form-section-title">
                 <div class="form-section-num">1</div>
@@ -48,129 +64,59 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="first-name">Имя <span class="req">*</span></label>
-                  <input type="text" id="first-name" name="firstName" placeholder="Иван" autocomplete="given-name">
-                  <span class="field-error" id="first-name-error">Введите имя</span>
+                  <label for="name">Имя <span class="req">*</span></label>
+                  <input type="text" id="name" name="name" placeholder="Иван" autocomplete="name" required>
+                  <span class="field-error" id="name-error">Введите имя</span>
                 </div>
-                <div class="form-group">
-                  <label for="last-name">Фамилия <span class="req">*</span></label>
-                  <input type="text" id="last-name" name="lastName" placeholder="Иванов" autocomplete="family-name">
-                  <span class="field-error" id="last-name-error">Введите фамилию</span>
-                </div>
-              </div>
-              <div class="form-row" style="margin-top:14px">
                 <div class="form-group">
                   <label for="phone">Телефон <span class="req">*</span></label>
-                  <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" autocomplete="tel">
+                  <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" autocomplete="tel" required>
                   <span class="field-error" id="phone-error">Введите корректный телефон</span>
                 </div>
+              </div>
+              <div class="form-row full" style="margin-top:14px">
                 <div class="form-group">
-                  <label for="email">E-mail <span class="req">*</span></label>
+                  <label for="email">E-mail</label>
                   <input type="email" id="email" name="email" placeholder="ivan@example.com" autocomplete="email">
                   <span class="field-error" id="email-error">Введите корректный e-mail</span>
                 </div>
               </div>
             </div>
 
-            <!-- Секция 2: Доставка -->
+            <!-- Секция 2: соцсети и мессенджеры (необязательно) -->
             <div class="form-section">
               <div class="form-section-title">
                 <div class="form-section-num">2</div>
-                Способ доставки
+                Где вам удобнее писать
               </div>
-
-              <div class="delivery-options">
-                <!-- Вариант: СДЭК -->
-                <label class="delivery-option">
-                  <input type="radio" name="delivery" value="cdek" checked>
-                  <div class="delivery-option-info">
-                    <div class="delivery-option-name">СДЭК — до пункта выдачи</div>
-                    <div class="delivery-option-desc">3–7 рабочих дней, более 5000 пунктов выдачи</div>
-                  </div>
-                  <div class="delivery-option-price" data-price="290">290 ₽</div>
-                </label>
-
-                <!-- Вариант: Почта России -->
-                <label class="delivery-option">
-                  <input type="radio" name="delivery" value="post">
-                  <div class="delivery-option-info">
-                    <div class="delivery-option-name">Почта России — до двери</div>
-                    <div class="delivery-option-desc">7–14 рабочих дней, по всей России</div>
-                  </div>
-                  <div class="delivery-option-price" data-price="190">190 ₽</div>
-                </label>
-
-                <!-- Вариант: Курьер -->
-                <label class="delivery-option">
-                  <input type="radio" name="delivery" value="courier">
-                  <div class="delivery-option-info">
-                    <div class="delivery-option-name">Курьер — до двери (Москва/СПб)</div>
-                    <div class="delivery-option-desc">1–3 рабочих дня, только Москва и Санкт-Петербург</div>
-                  </div>
-                  <div class="delivery-option-price" data-price="490">490 ₽</div>
-                </label>
-              </div>
-
-              <!-- Адрес доставки -->
-              <div style="margin-top:16px">
-                <div class="form-row full">
-                  <div class="form-group">
-                    <label for="city">Город <span class="req">*</span></label>
-                    <input type="text" id="city" name="city" placeholder="Москва" autocomplete="address-level2">
-                    <span class="field-error" id="city-error">Введите город</span>
-                  </div>
+              <div class="form-row full">
+                <div class="form-group">
+                  <label for="vk">Ссылка на ВКонтакте</label>
+                  <input type="text" id="vk" name="vk" placeholder="https://vk.com/id123456">
                 </div>
-                <div class="form-row full" style="margin-top:14px">
-                  <div class="form-group">
-                    <label for="address">Адрес <span class="req">*</span></label>
-                    <input type="text" id="address" name="address" placeholder="ул. Пушкина, д. 10, кв. 5" autocomplete="street-address">
-                    <span class="field-error" id="address-error">Введите адрес</span>
-                  </div>
+              </div>
+              <div class="form-row" style="margin-top:14px">
+                <div class="form-group">
+                  <label for="telegram">Ссылка на Telegram</label>
+                  <input type="text" id="telegram" name="telegram" placeholder="https://t.me/username или @username">
+                </div>
+                <div class="form-group">
+                  <label for="max">Ссылка на MAX</label>
+                  <input type="text" id="max" name="max" placeholder="https://max.ru/u/...">
                 </div>
               </div>
             </div>
 
-            <!-- Секция 3: Оплата -->
+            <!-- Секция 3: комментарий -->
             <div class="form-section">
               <div class="form-section-title">
                 <div class="form-section-num">3</div>
-                Способ оплаты
-              </div>
-
-              <div class="payment-options">
-                <label class="payment-option">
-                  <input type="radio" name="payment" value="card" checked>
-                  <span class="payment-icon">💳</span>
-                  <span class="payment-name">Карта онлайн</span>
-                </label>
-                <label class="payment-option">
-                  <input type="radio" name="payment" value="sbp">
-                  <span class="payment-icon">📲</span>
-                  <span class="payment-name">СБП</span>
-                </label>
-                <label class="payment-option">
-                  <input type="radio" name="payment" value="cash">
-                  <span class="payment-icon">💵</span>
-                  <span class="payment-name">При получении</span>
-                </label>
-                <label class="payment-option">
-                  <input type="radio" name="payment" value="invoice">
-                  <span class="payment-icon">🧾</span>
-                  <span class="payment-name">По счёту (юр. лицо)</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Секция 4: Комментарий -->
-            <div class="form-section">
-              <div class="form-section-title">
-                <div class="form-section-num">4</div>
                 Комментарий к заказу
               </div>
               <div class="form-row full">
                 <div class="form-group">
-                  <label for="comment">Пожелания (необязательно)</label>
-                  <textarea id="comment" name="comment" placeholder="Например: позвоните перед доставкой, или особые пожелания по упаковке..."></textarea>
+                  <label for="message">Пожелания (необязательно)</label>
+                  <textarea id="message" name="message" placeholder="Например: количество футболок, сроки или особые пожелания по печати..."></textarea>
                 </div>
               </div>
             </div>
@@ -186,21 +132,31 @@
             <h3>Ваш заказ</h3>
           </div>
 
-          <!-- Превью дизайна -->
+          <!-- Превью дизайна: перед и спина -->
           <div class="sidebar-preview">
-            <div class="preview-tshirt">
-              <!-- Канвас для отображения превью заказа -->
-              <canvas id="order-preview-canvas" width="100" height="120"></canvas>
-              <div class="preview-info">
-                <div class="preview-item-name" id="preview-name">Футболка с принтом</div>
-                <div class="preview-item-detail" id="preview-color">
-                  <span class="color-badge" id="preview-color-badge" style="background:#f8fafc;border-color:#e2e8f0"></span>
-                  <span id="preview-color-name">Белый</span>
-                </div>
-                <div class="preview-item-detail" id="preview-size">
-                  Размер: <strong id="preview-size-val">M</strong>
-                </div>
+            <div class="preview-sides">
+              <figure class="preview-side">
+                <img id="preview-front" alt="Макет: перед">
+                <figcaption>Перед <span id="preview-front-status"></span></figcaption>
+              </figure>
+              <figure class="preview-side">
+                <img id="preview-back" alt="Макет: спина">
+                <figcaption>Спина <span id="preview-back-status"></span></figcaption>
+              </figure>
+            </div>
+            <div class="preview-info" style="margin-top:16px">
+              <div class="preview-item-name">Футболка с принтом</div>
+              <div class="preview-item-detail">
+                <span class="color-badge" id="preview-color-badge" style="background:#f8fafc;border-color:#e2e8f0"></span>
+                <span id="preview-color-name">Белый</span>
               </div>
+              <div class="preview-item-detail">
+                Размер: <strong id="preview-size-val">M</strong>
+              </div>
+            </div>
+            <!-- Предупреждение, если дизайн не найден -->
+            <div class="order-warning" id="no-design-warning" hidden>
+              Дизайн не найден. <a href="constructor.html">Создайте его в конструкторе</a>, затем вернитесь сюда.
             </div>
           </div>
 
@@ -215,23 +171,20 @@
               <span>290 ₽</span>
             </div>
             <div class="sidebar-total-row">
-              <span>Доставка</span>
-              <span id="delivery-cost-display">290 ₽</span>
-            </div>
-            <div class="sidebar-total-row">
               <span>Итого</span>
-              <span id="total-display">2 070 ₽</span>
+              <span>1 780 ₽</span>
             </div>
           </div>
 
-          <!-- Кнопка подтверждения -->
+          <!-- Кнопка отправки -->
           <div class="sidebar-submit">
             <button type="submit" form="order-form" class="btn btn-accent btn-lg btn-full" id="submit-btn">
-              Подтвердить заказ
+              Отправить заказ
             </button>
+            <!-- Сообщение об ошибке отправки -->
+            <div class="order-warning" id="submit-error" role="alert" hidden></div>
             <div style="font-size:0.78rem;color:var(--color-text-muted);text-align:center;margin-top:10px">
-              Нажимая кнопку, вы соглашаетесь с
-              <a href="#" style="color:var(--color-primary)">условиями оферты</a>
+              Макеты обеих сторон будут отправлены нам в PDF
             </div>
           </div>
         </div>
@@ -249,21 +202,18 @@
 
   <!-- Подвал -->
   <footer class="site-footer">
-    <div class="footer-logo">Принт<span>Шоп</span></div>
-    <p>© 2024 ПринтШоп — Принт на футболках с доставкой по России</p>
+    <div class="footer-logo">Отпе<span>чаток</span></div>
+    <p>© 2026 Отпечаток — принт на футболках с доставкой по России</p>
   </footer>
 
-  <!-- Оверлей успешного заказа -->
-  <div class="success-overlay" id="success-overlay">
+  <!-- Модальное окно после успешной отправки -->
+  <div class="success-overlay" id="success-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
     <div class="success-box">
       <div class="success-icon">🎉</div>
-      <h2>Заказ оформлен!</h2>
-      <p>Спасибо за заказ. Мы получили вашу заявку и скоро свяжемся с вами.</p>
-      <div class="order-number" id="order-number-display">#ORD-00000</div>
-      <p style="font-size:0.9rem">Подтверждение будет отправлено на указанный e-mail</p>
+      <h2 id="success-title">Спасибо!</h2>
+      <p>Спасибо за заказ! Мы с вами свяжемся в ближайшее время.</p>
       <div class="success-actions" style="margin-top:24px">
-        <a href="index.html" class="btn btn-primary">В каталог</a>
-        <a href="constructor.html" class="btn btn-ghost">Создать ещё</a>
+        <button type="button" class="btn btn-primary" id="success-close">Закрыть</button>
       </div>
     </div>
   </div>
@@ -274,29 +224,34 @@
        Скрипт страницы оформления заказа
        ======================================== */
 
-    // ── Загрузка сохранённого дизайна из localStorage ──────────────────────
+    // Адрес серверной функции Netlify, которая отправляет письмо
+    const SEND_ORDER_URL = '/.netlify/functions/send-order';
+
+    // Дизайн, сохранённый конструктором (перед и спина)
+    let savedDesign = {};
+
     document.addEventListener('DOMContentLoaded', function () {
 
-      // Читаем данные дизайна, сохранённые конструктором
-      const savedDesign = JSON.parse(localStorage.getItem('tshirtDesign') || '{}');
-      const tshirtColor  = savedDesign.color || '#f8fafc';
-      const tshirtSize   = savedDesign.size  || 'M';
-      const colorName    = savedDesign.colorName || 'Белый';
+      // ── Читаем данные дизайна из localStorage ──────────────────────────
+      try {
+        savedDesign = JSON.parse(localStorage.getItem('tshirtDesign') || '{}');
+      } catch (err) {
+        savedDesign = {};
+      }
 
-      // Обновляем превью в сайдбаре
-      document.getElementById('preview-color-badge').style.background = tshirtColor;
-      document.getElementById('preview-color-name').textContent = colorName;
-      document.getElementById('preview-size-val').textContent = tshirtSize;
+      const sides = savedDesign.sides || {};
 
-      // ── Отрисовка мини-превью футболки на канвасе ──────────────────────
-      drawPreviewCanvas(tshirtColor, savedDesign.imageDataUrl);
+      document.getElementById('preview-color-badge').style.background = savedDesign.color || '#f8fafc';
+      document.getElementById('preview-color-name').textContent = savedDesign.colorName || 'Белый';
+      document.getElementById('preview-size-val').textContent  = savedDesign.size || 'M';
 
-      // ── Пересчёт стоимости при смене доставки ──────────────────────────
-      document.querySelectorAll('input[name="delivery"]').forEach(function (radio) {
-        radio.addEventListener('change', updateTotal);
-      });
+      // Показываем макеты обеих сторон
+      showSidePreview('front', sides.front);
+      showSidePreview('back',  sides.back);
 
-      updateTotal();
+      if (!hasDesign()) {
+        document.getElementById('no-design-warning').hidden = false;
+      }
 
       // ── Обработчик формы ───────────────────────────────────────────────
       document.getElementById('order-form').addEventListener('submit', function (e) {
@@ -305,103 +260,48 @@
           submitOrder();
         }
       });
+
+      // Кнопка «Закрыть» в модальном окне
+      document.getElementById('success-close').addEventListener('click', function () {
+        document.getElementById('success-overlay').classList.remove('visible');
+      });
     });
 
-    // ── Рисуем мини-превью футболки ────────────────────────────────────────
-    function drawPreviewCanvas(color, imageDataUrl) {
-      const canvas = document.getElementById('order-preview-canvas');
-      const ctx    = canvas.getContext('2d');
-      const W = canvas.width;
-      const H = canvas.height;
+    // ── Есть ли хотя бы одна сторона с изображением ───────────────────────
+    function hasDesign() {
+      const s = savedDesign.sides || {};
+      return !!((s.front && s.front.hasImage) || (s.back && s.back.hasImage));
+    }
 
-      ctx.clearRect(0, 0, W, H);
+    // ── Превью одной стороны в сайдбаре ───────────────────────────────────
+    function showSidePreview(key, side) {
+      const img    = document.getElementById('preview-' + key);
+      const status = document.getElementById('preview-' + key + '-status');
 
-      // Рисуем силуэт футболки
-      ctx.fillStyle = color;
-      ctx.strokeStyle = darkenColor(color, 20);
-      ctx.lineWidth = 1.5;
-
-      ctx.beginPath();
-      // Тело футболки
-      ctx.moveTo(W * 0.28, H * 0.14);
-      ctx.lineTo(W * 0.05, H * 0.32);
-      ctx.lineTo(W * 0.20, H * 0.38);
-      ctx.lineTo(W * 0.18, H * 0.88);
-      ctx.lineTo(W * 0.82, H * 0.88);
-      ctx.lineTo(W * 0.80, H * 0.38);
-      ctx.lineTo(W * 0.95, H * 0.32);
-      ctx.lineTo(W * 0.72, H * 0.14);
-      // Горловина
-      ctx.quadraticCurveTo(W * 0.60, H * 0.22, W * 0.50, H * 0.22);
-      ctx.quadraticCurveTo(W * 0.40, H * 0.22, W * 0.28, H * 0.14);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-
-      // Если есть сохранённое изображение — рисуем его поверх
-      if (imageDataUrl) {
-        const img = new Image();
-        img.onload = function () {
-          const maxW = W * 0.5;
-          const maxH = H * 0.4;
-          const scale = Math.min(maxW / img.width, maxH / img.height);
-          const iw = img.width  * scale;
-          const ih = img.height * scale;
-          const ix = (W - iw) / 2;
-          const iy = H * 0.38;
-          ctx.drawImage(img, ix, iy, iw, ih);
-        };
-        img.src = imageDataUrl;
+      if (side && side.dataUrl) {
+        img.src = side.dataUrl;
+      } else {
+        img.hidden = true;
       }
-    }
-
-    // ── Вспомогательная функция: затемнить hex-цвет ───────────────────────
-    function darkenColor(hex, amount) {
-      hex = hex.replace('#', '');
-      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-      let r = Math.max(0, parseInt(hex.slice(0,2), 16) - amount);
-      let g = Math.max(0, parseInt(hex.slice(2,4), 16) - amount);
-      let b = Math.max(0, parseInt(hex.slice(4,6), 16) - amount);
-      return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
-    }
-
-    // ── Пересчёт итоговой суммы ────────────────────────────────────────────
-    function updateTotal() {
-      const selected = document.querySelector('input[name="delivery"]:checked');
-      const deliveryLabel = selected ? selected.closest('.delivery-option') : null;
-      const priceEl = deliveryLabel ? deliveryLabel.querySelector('.delivery-option-price') : null;
-      const deliveryCost = priceEl ? parseInt(priceEl.dataset.price) : 290;
-
-      const base  = 1490 + 290; // футболка + печать
-      const total = base + deliveryCost;
-
-      document.getElementById('delivery-cost-display').textContent = deliveryCost + ' ₽';
-      document.getElementById('total-display').textContent = formatPrice(total) + ' ₽';
-    }
-
-    // ── Форматирование числа с пробелом-разделителем ──────────────────────
-    function formatPrice(n) {
-      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      status.textContent = side && side.hasImage ? '' : '· без принта';
     }
 
     // ── Валидация формы ────────────────────────────────────────────────────
     function validateForm() {
       let valid = true;
 
-      // Список полей для проверки: [id поля, id блока ошибки, функция проверки]
+      // [id поля, id блока ошибки, функция проверки]
       const fields = [
-        ['first-name',  'first-name-error',  v => v.trim().length >= 2],
-        ['last-name',   'last-name-error',   v => v.trim().length >= 2],
-        ['phone',       'phone-error',       v => /^[\d\s\+\-\(\)]{7,}$/.test(v.trim())],
-        ['email',       'email-error',       v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())],
-        ['city',        'city-error',        v => v.trim().length >= 2],
-        ['address',     'address-error',     v => v.trim().length >= 5],
+        ['name',  'name-error',  v => v.trim().length >= 2],
+        ['phone', 'phone-error', v => /^[\d\s\+\-\(\)]{7,}$/.test(v.trim())],
+        // E-mail необязателен, но если введён — должен быть корректным
+        ['email', 'email-error', v => v.trim() === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())],
       ];
 
       fields.forEach(function ([fieldId, errorId, checkFn]) {
-        const input    = document.getElementById(fieldId);
-        const errorEl  = document.getElementById(errorId);
-        const isValid  = checkFn(input.value);
+        const input   = document.getElementById(fieldId);
+        const errorEl = document.getElementById(errorId);
+        const isValid = checkFn(input.value);
 
         input.classList.toggle('error', !isValid);
         errorEl.classList.toggle('visible', !isValid);
@@ -412,24 +312,145 @@
       return valid;
     }
 
+    // ── Загрузка картинки из dataURL ───────────────────────────────────────
+    function loadImage(src) {
+      return new Promise(function (resolve, reject) {
+        const img = new Image();
+        img.onload  = () => resolve(img);
+        img.onerror = () => reject(new Error('Не удалось загрузить макет'));
+        img.src = src;
+      });
+    }
+
+    // ── Страница PDF для одной стороны ─────────────────────────────────────
+    // Стандартные шрифты jsPDF не умеют кириллицу, поэтому заголовок
+    // рисуем на обычном Canvas вместе с макетом и кладём в PDF картинкой.
+    async function renderPdfPage(title, side, contacts) {
+      const PAGE_W = 1240;   // A4 при 150 DPI
+      const PAGE_H = 1754;
+      const canvas = document.createElement('canvas');
+      canvas.width  = PAGE_W;
+      canvas.height = PAGE_H;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+
+      // Заголовок и параметры заказа
+      ctx.fillStyle = '#111111';
+      ctx.font = 'bold 56px Inter, Arial, sans-serif';
+      ctx.fillText('Отпечаток — заказ', 80, 130);
+
+      ctx.font = 'bold 44px Inter, Arial, sans-serif';
+      ctx.fillText('Сторона: ' + title + (side && side.hasImage ? '' : ' (без принта)'), 80, 210);
+
+      ctx.font = '32px Inter, Arial, sans-serif';
+      ctx.fillStyle = '#444444';
+      ctx.fillText('Цвет: ' + (savedDesign.colorName || '—') + '   ·   Размер: ' + (savedDesign.size || '—'), 80, 270);
+      ctx.fillText('Клиент: ' + contacts.name + '   ·   ' + contacts.phone, 80, 320);
+
+      // Макет стороны, вписанный в оставшееся место
+      if (side && side.dataUrl) {
+        const img = await loadImage(side.dataUrl);
+        const boxX = 80, boxY = 380, boxW = PAGE_W - 160, boxH = PAGE_H - boxY - 80;
+        const scale = Math.min(boxW / img.width, boxH / img.height);
+        const w = img.width * scale;
+        const h = img.height * scale;
+        ctx.drawImage(img, boxX + (boxW - w) / 2, boxY + (boxH - h) / 2, w, h);
+      }
+
+      return canvas.toDataURL('image/jpeg', 0.9);
+    }
+
+    // ── Генерация PDF с обеими сторонами, результат — base64 ──────────────
+    async function buildPdfBase64(contacts) {
+      const { jsPDF } = window.jspdf;
+      const pdf   = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const sides = savedDesign.sides || {};
+
+      const pages = [
+        ['Перед', sides.front],
+        ['Спина', sides.back],
+      ];
+
+      for (let i = 0; i < pages.length; i++) {
+        const [title, side] = pages[i];
+        if (i > 0) pdf.addPage();
+        const pageImage = await renderPdfPage(title, side, contacts);
+        pdf.addImage(pageImage, 'JPEG', 0, 0, 210, 297);
+      }
+
+      // datauristring выглядит как "data:application/pdf;...;base64,XXXX" — берём часть после запятой
+      return pdf.output('datauristring').split(',')[1];
+    }
+
+    // ── Показ ошибки отправки ──────────────────────────────────────────────
+    function showSubmitError(text) {
+      const el = document.getElementById('submit-error');
+      el.textContent = text;
+      el.hidden = !text;
+    }
+
     // ── Отправка заказа ───────────────────────────────────────────────────
-    function submitOrder() {
+    async function submitOrder() {
+      const form      = document.getElementById('order-form');
       const submitBtn = document.getElementById('submit-btn');
+
+      showSubmitError('');
+
+      if (!hasDesign()) {
+        showSubmitError('Сначала создайте дизайн в конструкторе.');
+        return;
+      }
+
+      if (!window.jspdf) {
+        showSubmitError('Не удалось загрузить библиотеку PDF. Проверьте интернет и обновите страницу.');
+        return;
+      }
+
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Оформляем...';
+      submitBtn.textContent = 'Отправляем...';
 
-      // Имитация сетевого запроса
-      setTimeout(function () {
-        // Генерируем случайный номер заказа
-        const orderNum = '#ORD-' + Math.floor(10000 + Math.random() * 90000);
-        document.getElementById('order-number-display').textContent = orderNum;
+      try {
+        // Собираем все поля формы по их name
+        const contacts = Object.fromEntries(new FormData(form).entries());
 
-        // Очищаем сохранённый дизайн
+        // а-б) Берём макеты сторон и собираем из них PDF
+        const pdfBase64 = await buildPdfBase64(contacts);
+
+        // в) Отправляем PDF и данные формы на серверную функцию Netlify
+        const response = await fetch(SEND_ORDER_URL, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...contacts,
+            color:     savedDesign.colorName || '',
+            size:      savedDesign.size || '',
+            hasFront:  !!(savedDesign.sides && savedDesign.sides.front && savedDesign.sides.front.hasImage),
+            hasBack:   !!(savedDesign.sides && savedDesign.sides.back  && savedDesign.sides.back.hasImage),
+            pdf:       pdfBase64,
+          }),
+        });
+
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || 'Сервер вернул ошибку ' + response.status);
+        }
+
+        // г) Успех: очищаем форму и сохранённый дизайн, показываем модальное окно
+        form.reset();
         localStorage.removeItem('tshirtDesign');
-
-        // Показываем оверлей с успехом
         document.getElementById('success-overlay').classList.add('visible');
-      }, 1200);
+        document.getElementById('success-close').focus();
+
+      } catch (err) {
+        console.error('Ошибка отправки заказа:', err);
+        showSubmitError('Не удалось отправить заказ: ' + err.message +
+          '. Попробуйте ещё раз или напишите нам в Telegram, MAX или ВКонтакте.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить заказ';
+      }
     }
   </script>
 
