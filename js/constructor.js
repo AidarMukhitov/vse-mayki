@@ -12,18 +12,33 @@
   const CANVAS_W = 500;
   const CANVAS_H = 560;
 
-  // Область печати на футболке (куда можно класть изображение)
-  const PRINT_ZONE = {
-    x: CANVAS_W * 0.28,
-    y: CANVAS_H * 0.30,
-    w: CANVAS_W * 0.44,
-    h: CANVAS_H * 0.42,
-  };
-
   // Ограничения на загружаемый файл
   const MAX_FILE_BYTES = 25 * 1024 * 1024;   // 25 МБ
   const MAX_IMG_W      = 3508;               // A3 при 300 DPI: 297 мм
   const MAX_IMG_H      = 4961;               // A3 при 300 DPI: 420 мм
+
+  // Зона печати на футболке — лист A3 (297×420 мм), стоящий вертикально.
+  // Оборудование печатает только этот формат, поэтому изображение
+  // нельзя ни вынести за рамку, ни растянуть больше неё.
+  const ZONE_H = CANVAS_H * 0.48;
+  const ZONE_W = ZONE_H * (MAX_IMG_W / MAX_IMG_H);
+  const PRINT_ZONE = {
+    x: (CANVAS_W - ZONE_W) / 2,
+    y: CANVAS_H * 0.27,
+    w: ZONE_W,
+    h: ZONE_H,
+  };
+
+  // Допуск на погрешность вычислений с плавающей точкой (в пикселях канваса)
+  const ZONE_EPS = 0.5;
+
+  // Цвета рамки зоны печати: обычный и «упёрлись в границу»
+  const ZONE_COLOR       = 'rgba(204,255,0,0.9)';
+  const ZONE_ALERT_COLOR = '#ff4d4f';
+
+  // Минимальный масштаб — в процентах от максимального (вся зона A3)
+  const MIN_SCALE_PCT = 10;
+  const MAX_SCALE_PCT = 100;
 
   // Во сколько раз экспорт крупнее «логического» размера канваса (500×560)
   const EXPORT_SCALE = 2;
@@ -62,6 +77,7 @@
       height:                 CANVAS_H,
       selection:              false,   // отключаем групповое выделение
       preserveObjectStacking: true,
+      uniScaleKey:            null,    // Shift не включает растягивание без сохранения пропорций
     });
 
     return {
@@ -69,8 +85,9 @@
       canvas:    canvas,
       container: document.getElementById(containerId),
       imageObj:  null,   // объект Fabric.Image с дизайном этой стороны
-      baseScale: 1,      // масштаб, при котором картинка вписана в зону печати (= 100%)
+      fitScale:  1,      // масштаб, при котором картинка занимает всю зону A3 (= 100%, максимум)
       scalePct:  100,    // текущее значение ползунка для этой стороны
+      zoneRect:  null,   // пунктирная рамка зоны печати (для подсветки при упоре)
     };
   }
 
@@ -151,24 +168,63 @@
     });
     fc.insertAt(sideLabel, 1);
 
-    // Обозначение зоны печати (пунктирный прямоугольник) — только подсказка, в заказ не попадает
-    const printZoneRect = new fabric.Rect({
-      left:            PRINT_ZONE.x,
-      top:             PRINT_ZONE.y,
-      width:           PRINT_ZONE.w,
-      height:          PRINT_ZONE.h,
-      fill:            'transparent',
-      stroke:          'rgba(204,255,0,0.45)',
-      strokeWidth:     1.5,
+    // Обозначение зоны печати A3 — только подсказка, в заказ не попадает.
+    // Под пунктиром тёмная линия, чтобы рамку было видно на футболке любого цвета.
+    const zoneProps = {
+      left:          PRINT_ZONE.x,
+      top:           PRINT_ZONE.y,
+      width:         PRINT_ZONE.w,
+      height:        PRINT_ZONE.h,
+      fill:          'transparent',
+      strokeWidth:   1.5,
+      strokeUniform: true,
+      selectable:    false,
+      evented:       false,
+      _isTshirt:     true,
+      _isPrintZone:  true,
+    };
+
+    const printZoneUnderlay = new fabric.Rect(Object.assign({}, zoneProps, {
+      stroke: 'rgba(0,0,0,0.35)',
+    }));
+
+    const printZoneRect = new fabric.Rect(Object.assign({}, zoneProps, {
+      stroke:          ZONE_COLOR,
       strokeDashArray: [6, 4],
+    }));
+
+    // Подпись под рамкой: изображение туда попасть не может, значит не перекроет её
+    const printZoneLabel = new fabric.Text('Зона печати A3', {
+      left:            PRINT_ZONE.x + PRINT_ZONE.w / 2,
+      top:             PRINT_ZONE.y + PRINT_ZONE.h + 12,
+      originX:         'center',
+      originY:         'center',
+      fontFamily:      'Inter, Segoe UI, sans-serif',
+      fontSize:        11,
+      fontWeight:      600,
+      fill:            ZONE_COLOR,
+      backgroundColor: 'rgba(10,10,10,0.65)',
+      padding:         3,
       selectable:      false,
       evented:         false,
       _isTshirt:       true,
       _isPrintZone:    true,
     });
 
-    fc.insertAt(printZoneRect, 2);
+    fc.insertAt(printZoneUnderlay, 2);
+    fc.insertAt(printZoneRect, 3);
+    fc.insertAt(printZoneLabel, 4);
+    side.zoneRect = printZoneRect;
     fc.renderAll();
+  }
+
+  // ── Подсветка рамки зоны печати, когда изображение упёрлось в границу ────
+  function setZoneAlert(side, isAlert) {
+    if (!side.zoneRect) return;
+    const color = isAlert ? ZONE_ALERT_COLOR : ZONE_COLOR;
+    if (side.zoneRect.stroke === color) return;
+    side.zoneRect.set('stroke', color);
+    side.canvas.requestRenderAll();
   }
 
   // ── Вспомогательная: затемнить hex-цвет ─────────────────────────────────
@@ -181,19 +237,94 @@
     return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
   }
 
-  // ── Ограничиваем перемещение изображения пределами зоны печати ──────────
-  function constrainImage(img) {
-    img.on('moving', function () {
-      const half = { w: (img.getScaledWidth() / 2), h: (img.getScaledHeight() / 2) };
+  // ── Границы масштаба стороны (абсолютные значения scaleX/scaleY) ─────────
+  function minScale(side) { return side.fitScale * MIN_SCALE_PCT / 100; }
+  function maxScale(side) { return side.fitScale * MAX_SCALE_PCT / 100; }
 
-      const minX = PRINT_ZONE.x + half.w;
-      const maxX = PRINT_ZONE.x + PRINT_ZONE.w - half.w;
-      const minY = PRINT_ZONE.y + half.h;
-      const maxY = PRINT_ZONE.y + PRINT_ZONE.h - half.h;
+  // ── Сдвинуть изображение внутрь зоны печати. Возвращает true, если пришлось ─
+  // (изображение с originX/Y = 'center' и без поворота)
+  function clampPosition(img) {
+    const halfW = img.getScaledWidth()  / 2;
+    const halfH = img.getScaledHeight() / 2;
 
-      img.left = Math.min(Math.max(img.left, minX), maxX);
-      img.top  = Math.min(Math.max(img.top,  minY), maxY);
+    const left = Math.min(Math.max(img.left, PRINT_ZONE.x + halfW), PRINT_ZONE.x + PRINT_ZONE.w - halfW);
+    const top  = Math.min(Math.max(img.top,  PRINT_ZONE.y + halfH), PRINT_ZONE.y + PRINT_ZONE.h - halfH);
+
+    const moved = Math.abs(left - img.left) > ZONE_EPS || Math.abs(top - img.top) > ZONE_EPS;
+    img.set({ left: left, top: top });
+    return moved;
+  }
+
+  // ── Ограничение масштабирования ручками: изображение «упирается» в рамку ──
+  // Fabric держит неподвижной точку-якорь (противоположный угол, при Alt — центр).
+  // Считаем, сколько места есть от якоря до границ зоны, и не даём вырасти больше.
+  function clampScaling(side, img, transform) {
+    const w  = img.width;
+    const h  = img.height;
+    const ox = transform.originX;   // 'left' | 'right' | 'center'
+    const oy = transform.originY;   // 'top'  | 'bottom' | 'center'
+
+    const halfW = img.getScaledWidth()  / 2;
+    const halfH = img.getScaledHeight() / 2;
+    const anchorX = ox === 'left' ? img.left - halfW : ox === 'right' ? img.left + halfW : img.left;
+    const anchorY = oy === 'top'  ? img.top  - halfH : oy === 'bottom' ? img.top + halfH : img.top;
+
+    const zoneR = PRINT_ZONE.x + PRINT_ZONE.w;
+    const zoneB = PRINT_ZONE.y + PRINT_ZONE.h;
+    const availW = ox === 'left'  ? zoneR - anchorX
+                 : ox === 'right' ? anchorX - PRINT_ZONE.x
+                 : 2 * Math.min(anchorX - PRINT_ZONE.x, zoneR - anchorX);
+    const availH = oy === 'top'    ? zoneB - anchorY
+                 : oy === 'bottom' ? anchorY - PRINT_ZONE.y
+                 : 2 * Math.min(anchorY - PRINT_ZONE.y, zoneB - anchorY);
+
+    const upper = Math.min(maxScale(side), availW / w, availH / h);
+    const s = Math.min(Math.max(img.scaleX, minScale(side)), Math.max(upper, minScale(side)));
+    const hitLimit = img.scaleX > upper + 1e-6;
+
+    // Пересчитываем центр так, чтобы якорь остался на месте
+    const sw = w * s / 2;
+    const sh = h * s / 2;
+    img.set({
+      scaleX: s,
+      scaleY: s,
+      left: ox === 'left' ? anchorX + sw : ox === 'right' ? anchorX - sw : anchorX,
+      top:  oy === 'top'  ? anchorY + sh : oy === 'bottom' ? anchorY - sh : anchorY,
     });
+
+    // Подстраховка: если якорь сам оказался у края, просто сдвигаем внутрь
+    return clampPosition(img) || hitLimit;
+  }
+
+  // ── Привязка ограничений зоны печати к изображению ───────────────────────
+  function constrainImage(side, img) {
+    img.on('moving', function () {
+      setZoneAlert(side, clampPosition(img));
+    });
+
+    img.on('scaling', function (opt) {
+      setZoneAlert(side, clampScaling(side, img, opt.transform));
+      side.scalePct = Math.round(img.scaleX / side.fitScale * 100);
+      if (side === current()) syncControls();
+    });
+
+    // Отпустили мышь — рамка снова обычного цвета
+    img.on('modified', function () {
+      img.setCoords();
+      setZoneAlert(side, false);
+    });
+  }
+
+  // ── Проверка: изображение стороны целиком внутри зоны A3 ─────────────────
+  function isInsidePrintZone(side) {
+    const img = side.imageObj;
+    if (!img) return true;
+
+    const r = img.getBoundingRect(true, true);   // в координатах сцены, без учёта zoom
+    return r.left >= PRINT_ZONE.x - ZONE_EPS &&
+           r.top  >= PRINT_ZONE.y - ZONE_EPS &&
+           r.left + r.width  <= PRINT_ZONE.x + PRINT_ZONE.w + ZONE_EPS &&
+           r.top  + r.height <= PRINT_ZONE.y + PRINT_ZONE.h + ZONE_EPS;
   }
 
   // ── Сообщения об ошибке загрузки ─────────────────────────────────────────
@@ -266,10 +397,10 @@
 
     const img = new fabric.Image(imgEl);
 
-    // Масштабируем изображение так, чтобы оно вписалось в зону печати
-    const maxW = PRINT_ZONE.w * 0.85;
-    const maxH = PRINT_ZONE.h * 0.85;
-    const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+    // 100% — изображение занимает всю зону A3 по ширине или высоте; больше нельзя.
+    // Стартовый размер — 85% зоны, а маленькие картинки не растягиваем.
+    side.fitScale = Math.min(PRINT_ZONE.w / img.width, PRINT_ZONE.h / img.height);
+    const scale = Math.min(Math.max(Math.min(side.fitScale * 0.85, 1), minScale(side)), maxScale(side));
 
     img.set({
       left:               PRINT_ZONE.x + PRINT_ZONE.w / 2,
@@ -285,26 +416,25 @@
       cornerStrokeColor:  '#0a0a0a',
       transparentCorners: false,
       cornerSize:         10,
+      // Только пропорциональное масштабирование за углы и без поворота:
+      // так габариты изображения всегда совпадают с проверяемой рамкой
+      lockRotation:       true,
+      lockScalingFlip:    true,
+      lockSkewingX:       true,
+      lockSkewingY:       true,
       _isUserImage:       true,       // маркер пользовательского изображения
     });
+    img.setControlsVisibility({ mt: false, mb: false, ml: false, mr: false, mtr: false });
 
-    // Ограничиваем перемещение зоной печати
-    constrainImage(img);
-
-    // Синхронизируем ползунок масштаба с текущим масштабом объекта
-    img.on('scaling', function () {
-      const avgScale = (img.scaleX + img.scaleY) / 2;
-      side.scalePct = Math.min(200, Math.max(10, Math.round(avgScale / side.baseScale * 100)));
-      if (side === current()) syncControls();
-    });
+    // Перемещение и масштаб ограничены зоной печати A3
+    constrainImage(side, img);
 
     side.canvas.add(img);
     side.canvas.setActiveObject(img);
     side.canvas.renderAll();
 
     side.imageObj  = img;
-    side.baseScale = scale;
-    side.scalePct  = 100;
+    side.scalePct  = Math.round(scale / side.fitScale * 100);
 
     syncControls();
   }
@@ -315,6 +445,7 @@
     side.canvas.getObjects().filter(o => o._isUserImage).forEach(o => side.canvas.remove(o));
     side.imageObj  = null;
     side.scalePct  = 100;
+    setZoneAlert(side, false);
     side.canvas.discardActiveObject();
     side.canvas.renderAll();
     syncControls();
@@ -332,13 +463,16 @@
     side.canvas.renderAll();
   }
 
-  // ── Применить масштаб (в процентах от «вписанного» размера) ──────────────
+  // ── Применить масштаб (в процентах от максимального, 100% = вся зона A3) ──
+  // Масштаб идёт от центра; если изображение задевает рамку — сдвигаем внутрь.
   function applyScale(pct) {
     const side = current();
     if (!side.imageObj) return;
+    pct = Math.min(MAX_SCALE_PCT, Math.max(MIN_SCALE_PCT, pct));
     side.scalePct = pct;
-    const factor = side.baseScale * pct / 100;
+    const factor = side.fitScale * pct / 100;
     side.imageObj.set({ scaleX: factor, scaleY: factor });
+    clampPosition(side.imageObj);
     side.imageObj.setCoords();
     side.canvas.renderAll();
     syncControls();
@@ -355,7 +489,7 @@
     uploadSideEl.textContent = SIDE_LABELS[side.key];
 
     canvasHint.textContent = hasImage
-      ? 'Перетащите изображение или используйте ручки для изменения размера'
+      ? 'Перетаскивайте и меняйте размер в пределах пунктирной зоны печати A3'
       : `Загрузите изображение для стороны «${SIDE_LABELS[side.key]}»`;
 
     // Отмечаем на переключателе стороны, где уже есть дизайн
@@ -491,7 +625,7 @@
     e.preventDefault();
 
     const delta = e.deltaY < 0 ? 5 : -5;
-    applyScale(Math.min(200, Math.max(10, current().scalePct + delta)));
+    applyScale(current().scalePct + delta);
   }, { passive: false });
 
   // Кнопка «По центру»
@@ -540,6 +674,18 @@
   orderBtn.addEventListener('click', function () {
     if (!sides.front.imageObj && !sides.back.imageObj) {
       showUploadError('Загрузите изображение хотя бы на одну сторону футболки.');
+      return;
+    }
+
+    // Печать возможна только в пределах листа A3 — проверяем обе стороны
+    const outside = Object.values(sides).find(side => !isInsidePrintZone(side));
+    if (outside) {
+      switchSide(outside.key);
+      setZoneAlert(outside, true);
+      showUploadError(
+        `Изображение на стороне «${SIDE_LABELS[outside.key]}» выходит за зону печати A3. ` +
+        'Переместите или уменьшите его, чтобы оно поместилось в пунктирную рамку.'
+      );
       return;
     }
 

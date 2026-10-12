@@ -49,9 +49,8 @@
 
       <!-- Левая колонка: форма с контактами -->
       <div>
-        <form id="order-form" name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-          <!-- Служебные поля Netlify Forms -->
-          <input type="hidden" name="form-name" value="order" />
+        <form id="order-form" name="order" method="POST" novalidate>
+          <!-- Ловушка для ботов: скрытое поле, человек его не заполняет -->
           <p style="display:none"><label>Не заполняйте: <input name="bot-field" /></label></p>
 
           <div class="order-form-card">
@@ -224,8 +223,9 @@
        Скрипт страницы оформления заказа
        ======================================== */
 
-    // Адрес серверной функции Netlify, которая отправляет письмо
-    const SEND_ORDER_URL = '/.netlify/functions/send-order';
+    // PHP-обработчик, который отправляет письмо. Лежит в корне сайта
+    // рядом с order.html, поэтому путь относительный.
+    const SEND_ORDER_URL = 'send-order.php';
 
     // Дизайн, сохранённый конструктором (перед и спина)
     let savedDesign = {};
@@ -418,23 +418,36 @@
         // а-б) Берём макеты сторон и собираем из них PDF
         const pdfBase64 = await buildPdfBase64(contacts);
 
-        // в) Отправляем PDF и данные формы на серверную функцию Netlify
-        const response = await fetch(SEND_ORDER_URL, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...contacts,
-            color:     savedDesign.colorName || '',
-            size:      savedDesign.size || '',
-            hasFront:  !!(savedDesign.sides && savedDesign.sides.front && savedDesign.sides.front.hasImage),
-            hasBack:   !!(savedDesign.sides && savedDesign.sides.back  && savedDesign.sides.back.hasImage),
-            pdf:       pdfBase64,
-          }),
-        });
+        // в) Отправляем PDF и данные формы на send-order.php
+        let response;
+        try {
+          response = await fetch(SEND_ORDER_URL, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...contacts,
+              color:     savedDesign.colorName || '',
+              size:      savedDesign.size || '',
+              hasFront:  !!(savedDesign.sides && savedDesign.sides.front && savedDesign.sides.front.hasImage),
+              hasBack:   !!(savedDesign.sides && savedDesign.sides.back  && savedDesign.sides.back.hasImage),
+              pdf:       pdfBase64,
+            }),
+          });
+        } catch (networkErr) {
+          // fetch падает сам, только если сервер вообще недоступен
+          throw new Error('нет связи с сервером, проверьте интернет');
+        }
 
-        const result = await response.json().catch(() => ({}));
+        // Если PHP упал с фатальной ошибкой, вместо JSON придёт HTML —
+        // тогда разбор не удастся и мы покажем код ответа сервера
+        const result = await response.json().catch(() => null);
+        if (!result) {
+          throw new Error(response.status === 413
+            ? 'макет слишком большой для сервера'
+            : 'сервер вернул неожиданный ответ (код ' + response.status + ')');
+        }
         if (!response.ok || !result.ok) {
-          throw new Error(result.error || 'Сервер вернул ошибку ' + response.status);
+          throw new Error(result.error || 'сервер вернул ошибку ' + response.status);
         }
 
         // г) Успех: очищаем форму и сохранённый дизайн, показываем модальное окно
