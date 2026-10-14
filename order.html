@@ -391,6 +391,13 @@
       el.hidden = !text;
     }
 
+    // ── Извлекает base64-часть из data URL (отрезает «data:image/...;base64,») ─
+    function extractBase64(dataUrl) {
+      if (!dataUrl) return '';
+      const comma = dataUrl.indexOf(',');
+      return comma >= 0 ? dataUrl.slice(comma + 1) : '';
+    }
+
     // ── Отправка заказа ───────────────────────────────────────────────────
     async function submitOrder() {
       const form      = document.getElementById('order-form');
@@ -421,6 +428,7 @@
         // в) Отправляем PDF и данные формы на send-order.php
         let response;
         try {
+          const designSides = savedDesign.sides || {};
           response = await fetch(SEND_ORDER_URL, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -428,9 +436,11 @@
               ...contacts,
               color:     savedDesign.colorName || '',
               size:      savedDesign.size || '',
-              hasFront:  !!(savedDesign.sides && savedDesign.sides.front && savedDesign.sides.front.hasImage),
-              hasBack:   !!(savedDesign.sides && savedDesign.sides.back  && savedDesign.sides.back.hasImage),
+              hasFront:  !!(designSides.front && designSides.front.hasImage),
+              hasBack:   !!(designSides.back  && designSides.back.hasImage),
               pdf:       pdfBase64,
+              originalImageFront: extractBase64(designSides.front && designSides.front.originalDataUrl),
+              originalImageBack:  extractBase64(designSides.back  && designSides.back.originalDataUrl),
             }),
           });
         } catch (networkErr) {
