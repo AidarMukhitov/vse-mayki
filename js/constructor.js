@@ -27,21 +27,16 @@
     h: ZONE_H,
   };
 
-  // Допуск на погрешность вычислений с плавающей точкой (в пикселях канваса)
   const ZONE_EPS = 0.5;
 
-  // Цвета рамки зоны печати
   const ZONE_COLOR       = 'rgba(204,255,0,0.9)';
   const ZONE_ALERT_COLOR = '#ff4d4f';
 
-  // Минимальный масштаб — в процентах от максимального (вся зона A3)
   const MIN_SCALE_PCT = 10;
   const MAX_SCALE_PCT = 100;
 
-  // Во сколько раз экспорт крупнее «логического» размера канваса (500×560)
   const EXPORT_SCALE = 2;
 
-  // Подписи сторон для интерфейса
   const SIDE_LABELS = { front: 'перед', back: 'спина' };
 
   // ── Состояние приложения ──────────────────────────────────────────────────
@@ -222,12 +217,10 @@
     fc.renderAll();
   }
 
-  // ── Подсветка отключена: clipPath сам показывает, что вышло за зону ──────
   function setZoneAlert(side, isAlert) {
-    // ничего не делаем — рамка больше не краснеет
+    // clipPath сам показывает, что вышло за зону — подсветка отключена
   }
 
-  // ── Вспомогательная: затемнить hex-цвет ─────────────────────────────────
   function darkenHex(hex, amount) {
     hex = hex.replace('#', '');
     if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
@@ -237,11 +230,9 @@
     return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
   }
 
-  // ── Границы масштаба стороны ─────────────────────────────────────────────
   function minScale(side) { return side.fitScale * MIN_SCALE_PCT / 100; }
   function maxScale(side) { return side.fitScale * MAX_SCALE_PCT / 100; }
 
-  // ── Ограничения зоны печати отключены: clipPath сам обрезает всё лишнее ──
   function constrainImage(side, img) {
     img.on('scaling', function () {
       const pct = Math.round(img.scaleX / (img._fitScale || side.fitScale) * 100);
@@ -254,11 +245,9 @@
     });
   }
 
-  // ── Проверка: изображение стороны целиком внутри зоны A3 ─────────────────
   function isInsidePrintZone(side) {
     const img = side.imageObj;
     if (!img) return true;
-    // clipPath обрезает всё, что выходит за зону — изображение всегда «внутри»
     if (img.clipPath) return true;
 
     const r = img.getBoundingRect(true, true);
@@ -268,7 +257,6 @@
            r.top  + r.height <= PRINT_ZONE.y + PRINT_ZONE.h + ZONE_EPS;
   }
 
-  // ── Сообщения об ошибке загрузки ─────────────────────────────────────────
   function showUploadError(text) {
     uploadError.textContent = text;
     uploadError.hidden = false;
@@ -279,7 +267,6 @@
     uploadError.textContent = '';
   }
 
-  // ── Загрузка изображения на активную сторону ─────────────────────────────
   function loadImage(file) {
     hideUploadError();
 
@@ -329,7 +316,6 @@
     reader.readAsDataURL(file);
   }
 
-  // ── Размещение проверенного изображения на канвасе стороны ───────────────
   function placeImage(side, imgEl) {
     const img = new fabric.Image(imgEl);
 
@@ -337,7 +323,6 @@
     img._fitScale = side.fitScale;
     const scale = Math.min(Math.max(Math.min(side.fitScale * 0.85, 1), minScale(side)), maxScale(side));
 
-    // Маска: всё, что вышло за зону A3, не рисуется.
     img.clipPath = new fabric.Rect({
       left:               PRINT_ZONE.x,
       top:                PRINT_ZONE.y,
@@ -381,7 +366,6 @@
     syncControls();
   }
 
-  // ── Удаление выделенного пользовательского изображения ─────────────────
   function removeUserImage(side) {
     side = side || current();
     if (!side.imageObj) return;
@@ -394,7 +378,6 @@
     syncControls();
   }
 
-  // ── Центрирование изображения в зоне печати ──────────────────────────────
   function centerImage() {
     const side = current();
     if (!side.imageObj) return;
@@ -406,7 +389,6 @@
     side.canvas.renderAll();
   }
 
-  // ── Применить масштаб (в процентах от максимального, 100% = вся зона A3) ──
   function applyScale(pct) {
     const side = current();
     if (!side.imageObj) return;
@@ -419,12 +401,10 @@
     syncControls();
   }
 
-  // ── Вспомогательная: есть ли на стороне хотя бы одна картинка ───────────
   function sideHasImages(s) {
     return s.canvas.getObjects().some(function (o) { return o._isUserImage; });
   }
 
-  // ── Обновить панель управления под активную сторону ──────────────────────
   function syncControls() {
     const side     = current();
     const hasImage = !!side.imageObj;
@@ -446,7 +426,6 @@
     });
   }
 
-  // ── Переключение стороны «Перед / Спина» ─────────────────────────────────
   function switchSide(key) {
     if (!sides[key] || key === state.activeSide) return;
 
@@ -469,7 +448,6 @@
     current().canvas.calcOffset();
   }
 
-  // ── Экспорт стороны в картинку (без пунктира зоны печати) ───────────────
   function exportSide(side) {
     const fc = side.canvas;
     const zone = fc.getObjects().filter(o => o._isPrintZone);
@@ -490,7 +468,6 @@
     return dataUrl;
   }
 
-  // ── Сжатая копия оригинального изображения (макс. 3000×3000, JPEG 90%) ─────
   function compressOriginalImage(imageObj) {
     if (!imageObj) return null;
     var imgEl = imageObj.getElement();
@@ -512,18 +489,26 @@
     return tmp.toDataURL('image/jpeg', 0.90);
   }
 
+  // ── Все оригиналы одной стороны (массив dataURL) ────────────────────────
+  function collectOriginalImages(side) {
+    return side.canvas.getObjects()
+      .filter(function (o) { return o._isUserImage; })
+      .map(compressOriginalImage)
+      .filter(function (url) { return !!url; });
+  }
+
   // ── Сохранение дизайна обеих сторон в localStorage ──────────────────────
   function saveDesignToStorage() {
-    var origFront = compressOriginalImage(sides.front.canvas.getObjects().find(function (o) { return o._isUserImage; }) || null);
-    var origBack  = compressOriginalImage(sides.back.canvas.getObjects().find(function (o) { return o._isUserImage; }) || null);
+    var origFront = collectOriginalImages(sides.front);
+    var origBack  = collectOriginalImages(sides.back);
 
     const design = {
       color:     state.color,
       colorName: state.colorName,
       size:      state.size,
       sides: {
-        front: { hasImage: sideHasImages(sides.front), dataUrl: exportSide(sides.front), originalDataUrl: origFront },
-        back:  { hasImage: sideHasImages(sides.back),  dataUrl: exportSide(sides.back),  originalDataUrl: origBack },
+        front: { hasImage: sideHasImages(sides.front), dataUrl: exportSide(sides.front), originalDataUrls: origFront },
+        back:  { hasImage: sideHasImages(sides.back),  dataUrl: exportSide(sides.back),  originalDataUrls: origBack },
       },
     };
 
@@ -532,8 +517,8 @@
       return true;
     } catch (err) {
       try {
-        design.sides.front.originalDataUrl = null;
-        design.sides.back.originalDataUrl  = null;
+        design.sides.front.originalDataUrls = [];
+        design.sides.back.originalDataUrls  = [];
         localStorage.setItem('tshirtDesign', JSON.stringify(design));
         return true;
       } catch (err2) {
@@ -659,7 +644,6 @@
     window.location.href = 'order.html';
   });
 
-  // ── Адаптивный размер канваса ────────────────────────────────────────────
   function resizeCanvas() {
     const canvasArea = document.querySelector('.canvas-area');
     if (!canvasArea) return;
@@ -680,7 +664,6 @@
 
   window.addEventListener('resize', resizeCanvas);
 
-  // ── Инициализация при загрузке страницы ──────────────────────────────────
   Object.values(sides).forEach(side => drawTshirt(side, state.color));
   resizeCanvas();
   syncControls();

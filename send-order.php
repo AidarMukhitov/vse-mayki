@@ -165,9 +165,26 @@ if (isset($data['pdf']) && is_string($data['pdf']) && $data['pdf'] !== '') {
     }
 }
 
-// Декодируем оригинальные изображения
-$frontImageBinary = decode_and_resize_image(isset($data['originalImageFront']) ? $data['originalImageFront'] : '');
-$backImageBinary  = decode_and_resize_image(isset($data['originalImageBack'])  ? $data['originalImageBack']  : '');
+// Декодируем ВСЕ оригинальные изображения с каждой стороны (массивы)
+$frontImagesBinaries = [];
+$backImagesBinaries  = [];
+
+if (isset($data['originalImagesFront']) && is_array($data['originalImagesFront'])) {
+    foreach ($data['originalImagesFront'] as $b64) {
+        $bin = decode_and_resize_image($b64);
+        if ($bin !== false && $bin !== '') {
+            $frontImagesBinaries[] = $bin;
+        }
+    }
+}
+if (isset($data['originalImagesBack']) && is_array($data['originalImagesBack'])) {
+    foreach ($data['originalImagesBack'] as $b64) {
+        $bin = decode_and_resize_image($b64);
+        if ($bin !== false && $bin !== '') {
+            $backImagesBinaries[] = $bin;
+        }
+    }
+}
 
 // ── Текст письма ─────────────────────────────────────────────────────────
 $textRows = [];
@@ -216,15 +233,19 @@ try {
     $mail->Body    = $html;
     $mail->AltBody = $text;
 
-    if ($pdfBinary !== '') {
+        if ($pdfBinary !== '') {
         $mail->addStringAttachment($pdfBinary, 'order-' . date('Y-m-d') . '.pdf', PHPMailer::ENCODING_BASE64, 'application/pdf');
     }
 
-    if ($frontImageBinary !== false && $frontImageBinary !== '') {
-        $mail->addStringAttachment($frontImageBinary, 'front-original.jpg', PHPMailer::ENCODING_BASE64, 'image/jpeg');
+    // Оригиналы: перед
+    foreach ($frontImagesBinaries as $i => $bin) {
+        $num = $i + 1;
+        $mail->addStringAttachment($bin, "front-{$num}.jpg", PHPMailer::ENCODING_BASE64, 'image/jpeg');
     }
-    if ($backImageBinary !== false && $backImageBinary !== '') {
-        $mail->addStringAttachment($backImageBinary, 'back-original.jpg', PHPMailer::ENCODING_BASE64, 'image/jpeg');
+    // Оригиналы: спина
+    foreach ($backImagesBinaries as $i => $bin) {
+        $num = $i + 1;
+        $mail->addStringAttachment($bin, "back-{$num}.jpg", PHPMailer::ENCODING_BASE64, 'image/jpeg');
     }
 
     $mail->send();

@@ -8,12 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <!-- jsPDF — генерация PDF с макетами футболки прямо в браузере -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-  <!-- Шапка -->
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="logo">
@@ -25,7 +23,6 @@
         <a href="constructor.html" class="nav-link">Конструктор</a>
         <a href="order.html" class="nav-link active">Заказ</a>
       </nav>
-      <!-- Иконки для связи (правый верхний угол) -->
       <div class="header-contacts">
         <a href="https://t.me/otpechatok2026" class="contact-icon contact-tg" target="_blank" rel="noopener" title="Написать в Telegram" aria-label="Telegram">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.1 1.8 11.6c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3z"/></svg>
@@ -40,22 +37,18 @@
     </div>
   </header>
 
-  <!-- Основной контент страницы -->
   <div class="order-page">
     <h1 class="order-page-title">Оформление заказа</h1>
     <p class="order-page-subtitle">Оставьте контакты — мы свяжемся с вами, чтобы уточнить детали заказа</p>
 
     <div class="order-layout">
 
-      <!-- Левая колонка: форма с контактами -->
       <div>
         <form id="order-form" name="order" method="POST" novalidate>
-          <!-- Ловушка для ботов: скрытое поле, человек его не заполняет -->
           <p style="display:none"><label>Не заполняйте: <input name="bot-field" /></label></p>
 
           <div class="order-form-card">
 
-            <!-- Секция 1: обязательные контакты -->
             <div class="form-section">
               <div class="form-section-title">
                 <div class="form-section-num">1</div>
@@ -82,7 +75,6 @@
               </div>
             </div>
 
-            <!-- Секция 2: соцсети и мессенджеры (необязательно) -->
             <div class="form-section">
               <div class="form-section-title">
                 <div class="form-section-num">2</div>
@@ -106,7 +98,6 @@
               </div>
             </div>
 
-            <!-- Секция 3: комментарий -->
             <div class="form-section">
               <div class="form-section-title">
                 <div class="form-section-num">3</div>
@@ -124,14 +115,12 @@
         </form>
       </div>
 
-      <!-- Правая колонка: сводка заказа -->
       <div>
         <div class="order-sidebar-card">
           <div class="sidebar-header">
             <h3>Ваш заказ</h3>
           </div>
 
-          <!-- Превью дизайна: перед и спина -->
           <div class="sidebar-preview">
             <div class="preview-sides">
               <figure class="preview-side">
@@ -153,13 +142,11 @@
                 Размер: <strong id="preview-size-val">M</strong>
               </div>
             </div>
-            <!-- Предупреждение, если дизайн не найден -->
             <div class="order-warning" id="no-design-warning" hidden>
               Дизайн не найден. <a href="constructor.html">Создайте его в конструкторе</a>, затем вернитесь сюда.
             </div>
           </div>
 
-          <!-- Суммы -->
           <div class="sidebar-totals">
             <div class="sidebar-total-row">
               <span>Футболка</span>
@@ -175,12 +162,10 @@
             </div>
           </div>
 
-          <!-- Кнопка отправки -->
           <div class="sidebar-submit">
             <button type="submit" form="order-form" class="btn btn-accent btn-lg btn-full" id="submit-btn">
               Отправить заказ
             </button>
-            <!-- Сообщение об ошибке отправки -->
             <div class="order-warning" id="submit-error" role="alert" hidden></div>
             <div style="font-size:0.78rem;color:var(--color-text-muted);text-align:center;margin-top:10px">
               Макеты обеих сторон будут отправлены нам в PDF
@@ -188,7 +173,6 @@
           </div>
         </div>
 
-        <!-- Ссылка назад -->
         <div style="text-align:center;margin-top:16px">
           <a href="constructor.html" style="font-size:0.875rem;color:var(--color-text-muted)">
             ← Вернуться к редактированию дизайна
@@ -199,13 +183,11 @@
     </div>
   </div>
 
-  <!-- Подвал -->
   <footer class="site-footer">
     <div class="footer-logo">Отпе<span>чаток</span></div>
     <p>© 2026 Отпечаток — принт на футболках с доставкой по России</p>
   </footer>
 
-  <!-- Модальное окно после успешной отправки -->
   <div class="success-overlay" id="success-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
     <div class="success-box">
       <div class="success-icon">🎉</div>
@@ -217,22 +199,13 @@
     </div>
   </div>
 
-  <!-- Скрипт страницы заказа -->
   <script>
-    /* ========================================
-       Скрипт страницы оформления заказа
-       ======================================== */
-
-    // PHP-обработчик, который отправляет письмо. Лежит в корне сайта
-    // рядом с order.html, поэтому путь относительный.
     const SEND_ORDER_URL = 'send-order.php';
 
-    // Дизайн, сохранённый конструктором (перед и спина)
     let savedDesign = {};
 
     document.addEventListener('DOMContentLoaded', function () {
 
-      // ── Читаем данные дизайна из localStorage ──────────────────────────
       try {
         savedDesign = JSON.parse(localStorage.getItem('tshirtDesign') || '{}');
       } catch (err) {
@@ -245,7 +218,6 @@
       document.getElementById('preview-color-name').textContent = savedDesign.colorName || 'Белый';
       document.getElementById('preview-size-val').textContent  = savedDesign.size || 'M';
 
-      // Показываем макеты обеих сторон
       showSidePreview('front', sides.front);
       showSidePreview('back',  sides.back);
 
@@ -253,7 +225,6 @@
         document.getElementById('no-design-warning').hidden = false;
       }
 
-      // ── Обработчик формы ───────────────────────────────────────────────
       document.getElementById('order-form').addEventListener('submit', function (e) {
         e.preventDefault();
         if (validateForm()) {
@@ -261,19 +232,16 @@
         }
       });
 
-      // Кнопка «Закрыть» в модальном окне
       document.getElementById('success-close').addEventListener('click', function () {
         document.getElementById('success-overlay').classList.remove('visible');
       });
     });
 
-    // ── Есть ли хотя бы одна сторона с изображением ───────────────────────
     function hasDesign() {
       const s = savedDesign.sides || {};
       return !!((s.front && s.front.hasImage) || (s.back && s.back.hasImage));
     }
 
-    // ── Превью одной стороны в сайдбаре ───────────────────────────────────
     function showSidePreview(key, side) {
       const img    = document.getElementById('preview-' + key);
       const status = document.getElementById('preview-' + key + '-status');
@@ -286,15 +254,12 @@
       status.textContent = side && side.hasImage ? '' : '· без принта';
     }
 
-    // ── Валидация формы ────────────────────────────────────────────────────
     function validateForm() {
       let valid = true;
 
-      // [id поля, id блока ошибки, функция проверки]
       const fields = [
         ['name',  'name-error',  v => v.trim().length >= 2],
         ['phone', 'phone-error', v => /^[\d\s\+\-\(\)]{7,}$/.test(v.trim())],
-        // E-mail необязателен, но если введён — должен быть корректным
         ['email', 'email-error', v => v.trim() === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())],
       ];
 
@@ -312,7 +277,6 @@
       return valid;
     }
 
-    // ── Загрузка картинки из dataURL ───────────────────────────────────────
     function loadImage(src) {
       return new Promise(function (resolve, reject) {
         const img = new Image();
@@ -322,11 +286,8 @@
       });
     }
 
-    // ── Страница PDF для одной стороны ─────────────────────────────────────
-    // Стандартные шрифты jsPDF не умеют кириллицу, поэтому заголовок
-    // рисуем на обычном Canvas вместе с макетом и кладём в PDF картинкой.
     async function renderPdfPage(title, side, contacts) {
-      const PAGE_W = 1240;   // A4 при 150 DPI
+      const PAGE_W = 1240;
       const PAGE_H = 1754;
       const canvas = document.createElement('canvas');
       canvas.width  = PAGE_W;
@@ -336,7 +297,6 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, PAGE_W, PAGE_H);
 
-      // Заголовок и параметры заказа
       ctx.fillStyle = '#111111';
       ctx.font = 'bold 56px Inter, Arial, sans-serif';
       ctx.fillText('Отпечаток — заказ', 80, 130);
@@ -349,7 +309,6 @@
       ctx.fillText('Цвет: ' + (savedDesign.colorName || '—') + '   ·   Размер: ' + (savedDesign.size || '—'), 80, 270);
       ctx.fillText('Клиент: ' + contacts.name + '   ·   ' + contacts.phone, 80, 320);
 
-      // Макет стороны, вписанный в оставшееся место
       if (side && side.dataUrl) {
         const img = await loadImage(side.dataUrl);
         const boxX = 80, boxY = 380, boxW = PAGE_W - 160, boxH = PAGE_H - boxY - 80;
@@ -362,7 +321,6 @@
       return canvas.toDataURL('image/jpeg', 0.9);
     }
 
-    // ── Генерация PDF с обеими сторонами, результат — base64 ──────────────
     async function buildPdfBase64(contacts) {
       const { jsPDF } = window.jspdf;
       const pdf   = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -380,25 +338,21 @@
         pdf.addImage(pageImage, 'JPEG', 0, 0, 210, 297);
       }
 
-      // datauristring выглядит как "data:application/pdf;...;base64,XXXX" — берём часть после запятой
       return pdf.output('datauristring').split(',')[1];
     }
 
-    // ── Показ ошибки отправки ──────────────────────────────────────────────
     function showSubmitError(text) {
       const el = document.getElementById('submit-error');
       el.textContent = text;
       el.hidden = !text;
     }
 
-    // ── Извлекает base64-часть из data URL (отрезает «data:image/...;base64,») ─
     function extractBase64(dataUrl) {
       if (!dataUrl) return '';
       const comma = dataUrl.indexOf(',');
       return comma >= 0 ? dataUrl.slice(comma + 1) : '';
     }
 
-    // ── Отправка заказа ───────────────────────────────────────────────────
     async function submitOrder() {
       const form      = document.getElementById('order-form');
       const submitBtn = document.getElementById('submit-btn');
@@ -419,13 +373,10 @@
       submitBtn.textContent = 'Отправляем...';
 
       try {
-        // Собираем все поля формы по их name
         const contacts = Object.fromEntries(new FormData(form).entries());
 
-        // а-б) Берём макеты сторон и собираем из них PDF
         const pdfBase64 = await buildPdfBase64(contacts);
 
-        // в) Отправляем PDF и данные формы на send-order.php
         let response;
         try {
           const designSides = savedDesign.sides || {};
@@ -439,17 +390,14 @@
               hasFront:  !!(designSides.front && designSides.front.hasImage),
               hasBack:   !!(designSides.back  && designSides.back.hasImage),
               pdf:       pdfBase64,
-              originalImageFront: extractBase64(designSides.front && designSides.front.originalDataUrl),
-              originalImageBack:  extractBase64(designSides.back  && designSides.back.originalDataUrl),
+              originalImagesFront: (designSides.front && designSides.front.originalDataUrls || []).map(extractBase64),
+              originalImagesBack:  (designSides.back  && designSides.back.originalDataUrls  || []).map(extractBase64),
             }),
           });
         } catch (networkErr) {
-          // fetch падает сам, только если сервер вообще недоступен
           throw new Error('нет связи с сервером, проверьте интернет');
         }
 
-        // Если PHP упал с фатальной ошибкой, вместо JSON придёт HTML —
-        // тогда разбор не удастся и мы покажем код ответа сервера
         const result = await response.json().catch(() => null);
         if (!result) {
           throw new Error(response.status === 413
@@ -460,7 +408,6 @@
           throw new Error(result.error || 'сервер вернул ошибку ' + response.status);
         }
 
-        // г) Успех: очищаем форму и сохранённый дизайн, показываем модальное окно
         form.reset();
         localStorage.removeItem('tshirtDesign');
         document.getElementById('success-overlay').classList.add('visible');
