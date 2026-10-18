@@ -26,16 +26,17 @@ const MAX_IMG_BYTES = 5 * 1024 * 1024;
 
 // Поля формы и их подписи в письме
 $FIELDS = [
-    'name'     => 'Имя',
-    'phone'    => 'Телефон',
-    'email'    => 'E-mail',
-    'vk'       => 'ВКонтакте',
-    'telegram' => 'Telegram',
-    'max'      => 'MAX',
-    'color'    => 'Цвет футболки',
-    'size'     => 'Размер',
-    'sides'    => 'Стороны с принтом',
-    'message'  => 'Комментарий',
+    'product_type' => 'Тип товара',
+    'name'         => 'Имя',
+    'phone'        => 'Телефон',
+    'email'        => 'E-mail',
+    'vk'           => 'ВКонтакте',
+    'telegram'     => 'Telegram',
+    'max'          => 'MAX',
+    'color'        => 'Цвет футболки',
+    'size'         => 'Размер',
+    'sides'        => 'Стороны с принтом',
+    'message'      => 'Комментарий',
 ];
 
 // ── Ответ в формате JSON и завершение скрипта ────────────────────────────
@@ -216,7 +217,7 @@ try {
     $mail->SMTPAuth   = true;
 
     $mail->Username   = 'aidar.mukhitov@mail.ru';
-    $mail->Password   = 'password';
+    $mail->Password   = 'Qf38rtO2y8LW95N3rHuZ';
 
     $mail->Timeout    = 20;
     $mail->CharSet    = PHPMailer::CHARSET_UTF8;
@@ -228,7 +229,8 @@ try {
         $mail->addReplyTo($order['email'], $order['name']);
     }
 
-    $mail->Subject = 'Новый заказ: ' . $order['name'] . ', ' . $order['phone'];
+    $productLabel = $order['product_type'] !== '' ? '[' . $order['product_type'] . '] ' : '';
+    $mail->Subject = $productLabel . 'Новый заказ: ' . $order['name'] . ', ' . $order['phone'];
     $mail->isHTML(true);
     $mail->Body    = $html;
     $mail->AltBody = $text;

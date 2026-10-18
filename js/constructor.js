@@ -12,14 +12,12 @@
   const CANVAS_W = 500;
   const CANVAS_H = 560;
 
-  // Ограничения на загружаемый файл
-  const MAX_FILE_BYTES = 25 * 1024 * 1024;   // 25 МБ
-  const MAX_IMG_W      = 3508;               // A3 при 300 DPI: 297 мм
-  const MAX_IMG_H      = 4961;               // A3 при 300 DPI: 420 мм
+  // Ограничения на загружаемый файл (только по весу)
+  const MAX_FILE_BYTES = 50 * 1024 * 1024;   // 50 МБ
 
   // Зона печати на футболке — лист A3 (297×420 мм), стоящий вертикально.
   const ZONE_H = CANVAS_H * 0.48;
-  const ZONE_W = ZONE_H * (MAX_IMG_W / MAX_IMG_H);
+  const ZONE_W = ZONE_H * (297 / 420); 
   const PRINT_ZONE = {
     x: (CANVAS_W - ZONE_W) / 2,
     y: CANVAS_H * 0.27,
@@ -28,15 +26,13 @@
   };
 
   const ZONE_EPS = 0.5;
+  const ZONE_COLOR = 'rgba(204,255,0,0.9)';
 
-  const ZONE_COLOR       = 'rgba(204,255,0,0.9)';
-  const ZONE_ALERT_COLOR = '#ff4d4f';
-
+  // Масштаб: 10% — минимальный, 500% — максимальный (чтобы можно было сильно увеличить)
   const MIN_SCALE_PCT = 10;
-  const MAX_SCALE_PCT = 100;
+  const MAX_SCALE_PCT = 500;
 
   const EXPORT_SCALE = 2;
-
   const SIDE_LABELS = { front: 'перед', back: 'спина' };
 
   // ── Состояние приложения ──────────────────────────────────────────────────
@@ -116,12 +112,10 @@
     fc.getObjects().filter(o => o._isTshirt).forEach(o => fc.remove(o));
 
     const strokeColor = darkenHex(color, 25);
-
     fc.setBackgroundColor('#161616', fc.renderAll.bind(fc));
 
     const W = CANVAS_W;
     const H = CANVAS_H;
-
     const neckY = side.key === 'front' ? 0.19 : 0.13;
 
     const tshirtPath = new fabric.Path(
@@ -151,7 +145,6 @@
         }),
       }
     );
-
     fc.insertAt(tshirtPath, 0);
 
     const sideLabel = new fabric.Text(side.key === 'front' ? 'ПЕРЕД' : 'СПИНА', {
@@ -187,12 +180,10 @@
     const printZoneUnderlay = new fabric.Rect(Object.assign({}, zoneProps, {
       stroke: 'rgba(0,0,0,0.35)',
     }));
-
     const printZoneRect = new fabric.Rect(Object.assign({}, zoneProps, {
       stroke:          ZONE_COLOR,
       strokeDashArray: [6, 4],
     }));
-
     const printZoneLabel = new fabric.Text('Зона печати A3', {
       left:            PRINT_ZONE.x + PRINT_ZONE.w / 2,
       top:             PRINT_ZONE.y + PRINT_ZONE.h + 12,
@@ -218,7 +209,7 @@
   }
 
   function setZoneAlert(side, isAlert) {
-    // clipPath сам показывает, что вышло за зону — подсветка отключена
+    // подсветка отключена
   }
 
   function darkenHex(hex, amount) {
@@ -239,22 +230,14 @@
       side.scalePct = pct;
       if (side === current()) syncControls();
     });
-
     img.on('modified', function () {
       img.setCoords();
     });
   }
 
   function isInsidePrintZone(side) {
-    const img = side.imageObj;
-    if (!img) return true;
-    if (img.clipPath) return true;
-
-    const r = img.getBoundingRect(true, true);
-    return r.left >= PRINT_ZONE.x - ZONE_EPS &&
-           r.top  >= PRINT_ZONE.y - ZONE_EPS &&
-           r.left + r.width  <= PRINT_ZONE.x + PRINT_ZONE.w + ZONE_EPS &&
-           r.top  + r.height <= PRINT_ZONE.y + PRINT_ZONE.h + ZONE_EPS;
+    // Всегда true, т.к. clipPath скрывает всё лишнее
+    return true; 
   }
 
   function showUploadError(text) {
@@ -267,6 +250,7 @@
     uploadError.textContent = '';
   }
 
+  // ── Загрузка (БЕЗ проверки размеров) ──────────────────────────────────────
   function loadImage(file) {
     hideUploadError();
 
@@ -276,7 +260,7 @@
     }
 
     if (file.size > MAX_FILE_BYTES) {
-      showUploadError('Файл слишком большой. Максимальный размер — 25 МБ.');
+      showUploadError('Файл слишком большой. Максимальный размер — 50 МБ.');
       return;
     }
 
@@ -285,43 +269,32 @@
 
     reader.onload = function (e) {
       const imgEl = new Image();
-
       imgEl.onload = function () {
-        const w = imgEl.naturalWidth;
-        const h = imgEl.naturalHeight;
-
-        if (w > MAX_IMG_W || h > MAX_IMG_H) {
-          showUploadError(
-            `Изображение слишком большое: ${w}×${h} px. ` +
-            `Максимум — ${MAX_IMG_W}×${MAX_IMG_H} px (формат A3 при 300 DPI). ` +
-            'Уменьшите изображение и загрузите снова.'
-          );
-          return;
-        }
-
+        // ПРОВЕРКА РАЗМЕРОВ УБРАНА
         placeImage(side, imgEl);
       };
-
       imgEl.onerror = function () {
         showUploadError('Не удалось прочитать изображение. Попробуйте другой файл.');
       };
-
       imgEl.src = e.target.result;
     };
 
     reader.onerror = function () {
       showUploadError('Не удалось прочитать файл. Попробуйте ещё раз.');
     };
-
     reader.readAsDataURL(file);
   }
 
+  // ── Размещение ────────────────────────────────────────────────────────────
   function placeImage(side, imgEl) {
     const img = new fabric.Image(imgEl);
 
     side.fitScale = Math.min(PRINT_ZONE.w / img.width, PRINT_ZONE.h / img.height);
     img._fitScale = side.fitScale;
-    const scale = Math.min(Math.max(Math.min(side.fitScale * 0.85, 1), minScale(side)), maxScale(side));
+
+    let startScale = side.fitScale * 0.85;
+    if (startScale < minScale(side)) startScale = minScale(side);
+    if (startScale > maxScale(side)) startScale = maxScale(side);
 
     img.clipPath = new fabric.Rect({
       left:               PRINT_ZONE.x,
@@ -336,8 +309,8 @@
       top:                PRINT_ZONE.y + PRINT_ZONE.h / 2,
       originX:            'center',
       originY:            'center',
-      scaleX:             scale,
-      scaleY:             scale,
+      scaleX:             startScale,
+      scaleY:             startScale,
       objectCaching:      true,
       hasControls:        true,
       hasBorders:         true,
@@ -361,8 +334,7 @@
     side.canvas.renderAll();
 
     side.imageObj  = img;
-    side.scalePct  = Math.round(scale / side.fitScale * 100);
-
+    side.scalePct  = Math.round(startScale / side.fitScale * 100);
     syncControls();
   }
 
@@ -372,7 +344,6 @@
     side.canvas.remove(side.imageObj);
     side.imageObj = null;
     side.scalePct = 100;
-    setZoneAlert(side, false);
     side.canvas.discardActiveObject();
     side.canvas.renderAll();
     syncControls();
@@ -416,7 +387,7 @@
     uploadSideEl.textContent = SIDE_LABELS[side.key];
 
     canvasHint.textContent = hasImage
-      ? 'Перетаскивайте и меняйте размер в пределах пунктирной зоны печати A3'
+      ? 'Перетаскивайте и меняйте размер. Всё за рамкой A3 будет скрыто.'
       : hasAny
       ? 'Нажмите на картинку, чтобы выбрать её, или загрузите ещё одну'
       : `Загрузите изображение для стороны «${SIDE_LABELS[side.key]}»`;
@@ -430,7 +401,6 @@
     if (!sides[key] || key === state.activeSide) return;
 
     current().canvas.discardActiveObject().renderAll();
-
     state.activeSide = key;
 
     Object.values(sides).forEach(function (side) {
@@ -489,7 +459,6 @@
     return tmp.toDataURL('image/jpeg', 0.90);
   }
 
-  // ── Все оригиналы одной стороны (массив dataURL) ────────────────────────
   function collectOriginalImages(side) {
     return side.canvas.getObjects()
       .filter(function (o) { return o._isUserImage; })
@@ -497,7 +466,6 @@
       .filter(function (url) { return !!url; });
   }
 
-  // ── Сохранение дизайна обеих сторон в localStorage ──────────────────────
   function saveDesignToStorage() {
     var origFront = collectOriginalImages(sides.front);
     var origBack  = collectOriginalImages(sides.back);
@@ -625,16 +593,7 @@
       return;
     }
 
-    const outside = Object.values(sides).find(side => !isInsidePrintZone(side));
-    if (outside) {
-      switchSide(outside.key);
-      setZoneAlert(outside, true);
-      showUploadError(
-        `Изображение на стороне «${SIDE_LABELS[outside.key]}» выходит за зону печати A3. ` +
-        'Переместите или уменьшите его, чтобы оно поместилось в пунктирную рамку.'
-      );
-      return;
-    }
+    // Убрана проверка isInsidePrintZone, так как clipPath сам скрывает всё лишнее
 
     if (!saveDesignToStorage()) {
       showUploadError('Не удалось сохранить дизайн в браузере. Проверьте, что сайту разрешено хранить данные.');

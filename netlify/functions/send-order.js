@@ -20,16 +20,17 @@ const MAX_FIELD_LENGTH = 2000;
 
 // Поля формы и их подписи в письме (в порядке вывода)
 const FIELDS = [
-  ['name',     'Имя'],
-  ['phone',    'Телефон'],
-  ['email',    'E-mail'],
-  ['vk',       'ВКонтакте'],
-  ['telegram', 'Telegram'],
-  ['max',      'MAX'],
-  ['color',    'Цвет футболки'],
-  ['size',     'Размер'],
-  ['sides',    'Стороны с принтом'],
-  ['message',  'Комментарий'],
+  ['product_type', 'Тип товара'],
+  ['name',         'Имя'],
+  ['phone',        'Телефон'],
+  ['email',        'E-mail'],
+  ['vk',           'ВКонтакте'],
+  ['telegram',     'Telegram'],
+  ['max',          'MAX'],
+  ['color',        'Цвет футболки'],
+  ['size',         'Размер'],
+  ['sides',        'Стороны с принтом'],
+  ['message',      'Комментарий'],
 ];
 
 // ── Ответ в формате JSON ──────────────────────────────────────────────────
@@ -146,7 +147,7 @@ exports.handler = async function (event) {
       to:      RECIPIENT,
       // Если клиент указал e-mail, на письмо можно сразу ответить ему
       replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(order.email) ? order.email : undefined,
-      subject: `Новый заказ: ${order.name}, ${order.phone}`,
+      subject: `${order.product_type ? '[' + order.product_type + '] ' : ''}Новый заказ: ${order.name}, ${order.phone}`,
       text,
       html,
       attachments: pdf ? [{

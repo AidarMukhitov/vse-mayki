@@ -38,14 +38,15 @@
   </header>
 
   <div class="order-page">
-    <h1 class="order-page-title">Оформление заказа</h1>
-    <p class="order-page-subtitle">Оставьте контакты — мы свяжемся с вами, чтобы уточнить детали заказа</p>
+    <h1 class="order-page-title" id="order-page-title">Оформление заказа</h1>
+    <p class="order-page-subtitle" id="order-page-subtitle">Оставьте контакты — мы свяжемся с вами, чтобы уточнить детали заказа</p>
 
     <div class="order-layout">
 
       <div>
         <form id="order-form" name="order" method="POST" novalidate>
           <p style="display:none"><label>Не заполняйте: <input name="bot-field" /></label></p>
+          <input type="hidden" id="product_type" name="product_type" value="">
 
           <div class="order-form-card">
 
@@ -118,56 +119,71 @@
       <div>
         <div class="order-sidebar-card">
           <div class="sidebar-header">
-            <h3>Ваш заказ</h3>
+            <h3 id="sidebar-title">Ваш заказ</h3>
           </div>
 
-          <div class="sidebar-preview">
-            <div class="preview-sides">
-              <figure class="preview-side">
-                <img id="preview-front" alt="Макет: перед">
-                <figcaption>Перед <span id="preview-front-status"></span></figcaption>
-              </figure>
-              <figure class="preview-side">
-                <img id="preview-back" alt="Макет: спина">
-                <figcaption>Спина <span id="preview-back-status"></span></figcaption>
-              </figure>
-            </div>
-            <div class="preview-info" style="margin-top:16px">
-              <div class="preview-item-name">Футболка с принтом</div>
-              <div class="preview-item-detail">
-                <span class="color-badge" id="preview-color-badge" style="background:#f8fafc;border-color:#e2e8f0"></span>
-                <span id="preview-color-name">Белый</span>
+          <!-- Превью футболки (скрывается для кружек и лент) -->
+          <div id="tshirt-sidebar-block">
+            <div class="sidebar-preview">
+              <div class="preview-sides">
+                <figure class="preview-side">
+                  <img id="preview-front" alt="Макет: перед">
+                  <figcaption>Перед <span id="preview-front-status"></span></figcaption>
+                </figure>
+                <figure class="preview-side">
+                  <img id="preview-back" alt="Макет: спина">
+                  <figcaption>Спина <span id="preview-back-status"></span></figcaption>
+                </figure>
               </div>
-              <div class="preview-item-detail">
-                Размер: <strong id="preview-size-val">M</strong>
+              <div class="preview-info" style="margin-top:16px">
+                <div class="preview-item-name">Футболка с принтом</div>
+                <div class="preview-item-detail">
+                  <span class="color-badge" id="preview-color-badge" style="background:#f8fafc;border-color:#e2e8f0"></span>
+                  <span id="preview-color-name">Белый</span>
+                </div>
+                <div class="preview-item-detail">
+                  Размер: <strong id="preview-size-val">M</strong>
+                </div>
+              </div>
+              <div class="order-warning" id="no-design-warning" hidden>
+                Дизайн не найден. <a href="constructor.html">Создайте его в конструкторе</a>, затем вернитесь сюда.
               </div>
             </div>
-            <div class="order-warning" id="no-design-warning" hidden>
-              Дизайн не найден. <a href="constructor.html">Создайте его в конструкторе</a>, затем вернитесь сюда.
+
+            <div class="sidebar-totals">
+              <div class="sidebar-total-row">
+                <span>Футболка</span>
+                <span>1 490 ₽</span>
+              </div>
+              <div class="sidebar-total-row">
+                <span>Нанесение принта</span>
+                <span>290 ₽</span>
+              </div>
+              <div class="sidebar-total-row">
+                <span>Итого</span>
+                <span>1 780 ₽</span>
+              </div>
             </div>
           </div>
 
-          <div class="sidebar-totals">
-            <div class="sidebar-total-row">
-              <span>Футболка</span>
-              <span>1 490 ₽</span>
-            </div>
-            <div class="sidebar-total-row">
-              <span>Нанесение принта</span>
-              <span>290 ₽</span>
-            </div>
-            <div class="sidebar-total-row">
-              <span>Итого</span>
-              <span>1 780 ₽</span>
+          <!-- Блок для кружек/лент (скрыт по умолчанию) -->
+          <div id="non-tshirt-sidebar-block" hidden>
+            <div class="sidebar-preview">
+              <div class="preview-info">
+                <div class="preview-item-name" id="non-tshirt-product-name">Товар</div>
+                <p style="font-size:0.85rem;color:var(--color-text-muted);margin-top:8px;line-height:1.5">
+                  Опишите ваш заказ в поле «Пожелания»:<br>количество, текст надписи, сроки.
+                </p>
+              </div>
             </div>
           </div>
 
           <div class="sidebar-submit">
             <button type="submit" form="order-form" class="btn btn-accent btn-lg btn-full" id="submit-btn">
-              Отправить заказ
+              Отправить заявку
             </button>
             <div class="order-warning" id="submit-error" role="alert" hidden></div>
-            <div style="font-size:0.78rem;color:var(--color-text-muted);text-align:center;margin-top:10px">
+            <div id="sidebar-footer-note" style="font-size:0.78rem;color:var(--color-text-muted);text-align:center;margin-top:10px">
               Макеты обеих сторон будут отправлены нам в PDF
             </div>
           </div>
@@ -204,25 +220,70 @@
 
     let savedDesign = {};
 
+    // Типы товаров: ключ → { label, title, subtitle, placeholder }
+    const PRODUCT_TYPES = {
+      mug: {
+        label:       'Кружка',
+        title:       'Заказ кружки с принтом',
+        subtitle:    'Оставьте контакты — мы свяжемся и уточним детали вашей кружки',
+        productName: 'Кружка с принтом',
+        placeholder: 'Например: количество кружек, текст или изображение, сроки...',
+      },
+      ribbon: {
+        label:       'Лента',
+        title:       'Заказ выпускных лент',
+        subtitle:    'Оставьте контакты — мы свяжемся и уточним детали ваших лент',
+        productName: 'Выпускные ленты',
+        placeholder: 'Например: количество лент, имена, текст надписей, класс, сроки...',
+      },
+    };
+
+    // Тип товара из URL (?product=mug|ribbon), либо null (футболка)
+    const urlProduct = new URLSearchParams(window.location.search).get('product');
+    const productInfo = PRODUCT_TYPES[urlProduct] || null;
+
     document.addEventListener('DOMContentLoaded', function () {
 
-      try {
-        savedDesign = JSON.parse(localStorage.getItem('tshirtDesign') || '{}');
-      } catch (err) {
-        savedDesign = {};
-      }
+      // ── Адаптация страницы под тип товара ──────────────────────────────
+      if (productInfo) {
+        document.title = productInfo.title + ' — Отпечаток';
+        document.getElementById('order-page-title').textContent  = productInfo.title;
+        document.getElementById('order-page-subtitle').textContent = productInfo.subtitle;
+        document.getElementById('sidebar-title').textContent     = 'Ваша заявка';
+        document.getElementById('product_type').value            = productInfo.label;
+        document.getElementById('non-tshirt-product-name').textContent = productInfo.productName;
+        document.getElementById('message').placeholder           = productInfo.placeholder;
 
-      const sides = savedDesign.sides || {};
+        // Показываем блок для нефутбольных товаров, скрываем блок футболки
+        document.getElementById('tshirt-sidebar-block').hidden    = true;
+        document.getElementById('non-tshirt-sidebar-block').hidden = false;
+        document.getElementById('sidebar-footer-note').hidden     = true;
 
-      document.getElementById('preview-color-badge').style.background = savedDesign.color || '#f8fafc';
-      document.getElementById('preview-color-name').textContent = savedDesign.colorName || 'Белый';
-      document.getElementById('preview-size-val').textContent  = savedDesign.size || 'M';
+        // Ссылка «Вернуться» ведёт на главную
+        const backLink = document.querySelector('[href="constructor.html"]');
+        if (backLink && backLink.style.fontSize) {
+          backLink.href        = 'index.html';
+          backLink.textContent = '← На главную';
+        }
+      } else {
+        // Футболка: загружаем дизайн из localStorage
+        try {
+          savedDesign = JSON.parse(localStorage.getItem('tshirtDesign') || '{}');
+        } catch (err) {
+          savedDesign = {};
+        }
 
-      showSidePreview('front', sides.front);
-      showSidePreview('back',  sides.back);
+        const sides = savedDesign.sides || {};
+        document.getElementById('preview-color-badge').style.background = savedDesign.color || '#f8fafc';
+        document.getElementById('preview-color-name').textContent = savedDesign.colorName || 'Белый';
+        document.getElementById('preview-size-val').textContent   = savedDesign.size || 'M';
 
-      if (!hasDesign()) {
-        document.getElementById('no-design-warning').hidden = false;
+        showSidePreview('front', sides.front);
+        showSidePreview('back',  sides.back);
+
+        if (!hasDesign()) {
+          document.getElementById('no-design-warning').hidden = false;
+        }
       }
 
       document.getElementById('order-form').addEventListener('submit', function (e) {
@@ -359,6 +420,41 @@
 
       showSubmitError('');
 
+      // Для нефутболочных товаров PDF не нужен — отправляем только данные формы
+      if (productInfo) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляем...';
+        try {
+          const contacts = Object.fromEntries(new FormData(form).entries());
+          let response;
+          try {
+            response = await fetch(SEND_ORDER_URL, {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(contacts),
+            });
+          } catch (networkErr) {
+            throw new Error('нет связи с сервером, проверьте интернет');
+          }
+          const result = await response.json().catch(() => null);
+          if (!result || !response.ok || !result.ok) {
+            throw new Error((result && result.error) || 'сервер вернул ошибку ' + response.status);
+          }
+          form.reset();
+          document.getElementById('success-overlay').classList.add('visible');
+          document.getElementById('success-close').focus();
+        } catch (err) {
+          console.error('Ошибка отправки:', err);
+          showSubmitError('Не удалось отправить заявку: ' + err.message +
+            '. Попробуйте ещё раз или напишите нам напрямую.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Отправить заявку';
+        }
+        return;
+      }
+
+      // Футболка: обычный путь с PDF
       if (!hasDesign()) {
         showSubmitError('Сначала создайте дизайн в конструкторе.');
         return;

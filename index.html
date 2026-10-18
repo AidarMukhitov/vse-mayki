@@ -90,224 +90,104 @@
     </div>
   </section>
 
-  <!-- Каталог товаров -->
-  <section class="catalog-section" id="catalog">
+  <!-- Секция: Футболки с принтом -->
+  <section class="featured-section" id="catalog">
     <div class="section-header">
-      <h2 class="section-title">Каталог <span>футболок</span></h2>
-      <span style="font-size:0.9rem;color:var(--color-text-muted)">8 моделей</span>
+      <h2 class="section-title">Футболки <span>с принтом</span></h2>
     </div>
+    <div class="featured-card">
+      <div class="featured-card-image">
+        <svg viewBox="0 0 320 340" fill="none" xmlns="http://www.w3.org/2000/svg" class="featured-tshirt-svg">
+          <defs>
+            <linearGradient id="tshirt-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ccff00"/>
+              <stop offset="100%" stop-color="#00ff88"/>
+            </linearGradient>
+          </defs>
+          <path d="M96 48 L48 96 L80 112 L72 256 H248 L240 112 L272 96 L224 48 Q192 72 160 72 Q128 72 96 48Z"
+                fill="#1a1a1a" stroke="#2a2a2a" stroke-width="2"/>
+          <path d="M96 48 Q128 32 160 32 Q192 32 224 48" stroke="#2a2a2a" stroke-width="2" fill="none"/>
+          <text x="160" y="155" text-anchor="middle" font-family="Inter,sans-serif" font-size="28"
+                font-weight="800" fill="url(#tshirt-grad)" letter-spacing="2">ТВОЙ</text>
+          <text x="160" y="190" text-anchor="middle" font-family="Inter,sans-serif" font-size="28"
+                font-weight="800" fill="url(#tshirt-grad)" letter-spacing="2">ПРИНТ</text>
+          <rect x="112" y="108" width="96" height="120" rx="4" fill="none"
+                stroke="rgba(204,255,0,0.35)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <text x="160" y="244" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                font-weight="600" fill="rgba(204,255,0,0.5)" letter-spacing="3">ОТПЕЧАТОК</text>
+        </svg>
+      </div>
+      <div class="featured-card-content">
+        <div class="featured-card-badge">Хит продаж</div>
+        <h3>Футболка с вашим дизайном</h3>
+        <p>Загрузите любой рисунок, выберите цвет и размер — мы напечатаем за 2–3 дня и доставим по всей России</p>
+        <ul class="featured-list">
+          <li>DTF-печать — яркие цвета 100+ стирок</li>
+          <li>Размеры: S, M, L, XL, XXL</li>
+          <li>PNG, JPG, SVG с прозрачным фоном</li>
+          <li>Доставка СДЭК и Почтой России</li>
+        </ul>
+        <div class="featured-card-price">от <strong>1 490 ₽</strong> <small>+ печать от 290 ₽</small></div>
+        <a href="constructor.html" class="btn btn-accent btn-lg">Создать свою футболку</a>
+      </div>
+    </div>
+  </section>
 
-    <div class="product-grid">
+  <!-- Секция: Другие товары и услуги -->
+  <section class="other-products-section">
+    <div class="section-header">
+      <h2 class="section-title">Другие товары <span>и услуги</span></h2>
+    </div>
+    <div class="other-products-grid">
 
-      <!-- Товар 1 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <span class="product-badge">Хит</span>
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#3b82f6" stroke="#2563eb" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#2563eb" stroke-width="2" fill="none"/>
+      <!-- Кружки -->
+      <div class="product-service-card">
+        <div class="product-service-image">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="product-service-svg">
+            <rect x="40" y="60" width="100" height="110" rx="10" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="2"/>
+            <path d="M140 80 Q175 80 175 115 Q175 150 140 150" stroke="#3b82f6" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <rect x="55" y="75" width="70" height="80" rx="6" fill="#131313"/>
+            <text x="90" y="108" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                  font-weight="700" fill="#ccff00" letter-spacing="1">ТВОЙ</text>
+            <text x="90" y="124" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                  font-weight="700" fill="#ccff00" letter-spacing="1">ПРИНТ</text>
+            <ellipse cx="90" cy="63" rx="50" ry="8" fill="#222" stroke="#2a2a2a" stroke-width="1.5"/>
+            <ellipse cx="90" cy="170" rx="50" ry="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1.5"/>
           </svg>
         </div>
-        <div class="product-info">
-          <div class="product-category">Базовая серия</div>
-          <div class="product-name">Классика Синяя</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#3b82f6" title="Синий"></div>
-              <div class="color-dot" style="background:#1e3a8a" title="Тёмно-синий"></div>
-              <div class="color-dot" style="background:#93c5fd" title="Голубой"></div>
-            </div>
-            <div class="product-sizes">S, M, L, XL, XXL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
+        <div class="product-service-info">
+          <h3>Кружки с принтом</h3>
+          <p>Нанесём любое изображение или надпись на кружку — отличный подарок или корпоративный сувенир</p>
+          <a href="order.html?product=mug" class="btn btn-accent">Заказать кружку</a>
         </div>
       </div>
 
-      <!-- Товар 2 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#1e293b" stroke="#0f172a" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#0f172a" stroke-width="2" fill="none"/>
+      <!-- Выпускные ленты -->
+      <div class="product-service-card">
+        <div class="product-service-image">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="product-service-svg">
+            <defs>
+              <linearGradient id="ribbon-grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#a855f7"/>
+                <stop offset="100%" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+            <path d="M30 60 Q100 50 170 60 L165 145 Q100 155 35 145 Z"
+                  fill="url(#ribbon-grad)" opacity="0.9"/>
+            <path d="M30 60 Q100 50 170 60" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none"/>
+            <path d="M35 145 Q100 155 165 145" stroke="rgba(0,0,0,0.2)" stroke-width="1.5" fill="none"/>
+            <text x="100" y="96" text-anchor="middle" font-family="Inter,sans-serif" font-size="13"
+                  font-weight="700" fill="white" letter-spacing="1">ВЫПУСКНИК</text>
+            <text x="100" y="115" text-anchor="middle" font-family="Inter,sans-serif" font-size="11"
+                  font-weight="600" fill="rgba(255,255,255,0.8)">2026</text>
+            <path d="M85 155 L80 185 L100 170 L120 185 L115 155"
+                  fill="url(#ribbon-grad)" opacity="0.8"/>
           </svg>
         </div>
-        <div class="product-info">
-          <div class="product-category">Базовая серия</div>
-          <div class="product-name">Чёрный стандарт</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#1e293b" title="Чёрный"></div>
-              <div class="color-dot" style="background:#334155" title="Тёмно-серый"></div>
-              <div class="color-dot" style="background:#64748b" title="Серый"></div>
-            </div>
-            <div class="product-sizes">XS, S, M, L, XL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 390 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Товар 3 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <span class="product-badge">Новинка</span>
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#f97316" stroke="#ea6c0a" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#ea6c0a" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <div class="product-info">
-          <div class="product-category">Яркая серия</div>
-          <div class="product-name">Оранжевый заряд</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#f97316" title="Оранжевый"></div>
-              <div class="color-dot" style="background:#fb923c" title="Светло-оранжевый"></div>
-              <div class="color-dot" style="background:#fbbf24" title="Жёлтый"></div>
-            </div>
-            <div class="product-sizes">S, M, L, XL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Товар 4 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#cbd5e1" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <div class="product-info">
-          <div class="product-category">Базовая серия</div>
-          <div class="product-name">Белоснежная</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#f8fafc;border:1px solid #e2e8f0" title="Белый"></div>
-              <div class="color-dot" style="background:#f1f5f9" title="Молочный"></div>
-              <div class="color-dot" style="background:#e2e8f0" title="Светло-серый"></div>
-            </div>
-            <div class="product-sizes">XS, S, M, L, XL, XXL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 290 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Товар 5 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <span class="product-badge">Скидка</span>
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#22c55e" stroke="#16a34a" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#16a34a" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <div class="product-info">
-          <div class="product-category">Яркая серия</div>
-          <div class="product-name">Зелёный лес</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#22c55e" title="Зелёный"></div>
-              <div class="color-dot" style="background:#16a34a" title="Тёмно-зелёный"></div>
-              <div class="color-dot" style="background:#86efac" title="Светло-зелёный"></div>
-            </div>
-            <div class="product-sizes">S, M, L, XL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">990 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Товар 6 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#a855f7" stroke="#9333ea" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#9333ea" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <div class="product-info">
-          <div class="product-category">Яркая серия</div>
-          <div class="product-name">Фиолетовая мечта</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#a855f7" title="Фиолетовый"></div>
-              <div class="color-dot" style="background:#7c3aed" title="Тёмно-фиолетовый"></div>
-              <div class="color-dot" style="background:#d8b4fe" title="Лавандовый"></div>
-            </div>
-            <div class="product-sizes">XS, S, M, L, XL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Товар 7 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#dc2626" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <div class="product-info">
-          <div class="product-category">Яркая серия</div>
-          <div class="product-name">Красный флаг</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#ef4444" title="Красный"></div>
-              <div class="color-dot" style="background:#b91c1c" title="Тёмно-красный"></div>
-              <div class="color-dot" style="background:#fca5a5" title="Розовый"></div>
-            </div>
-            <div class="product-sizes">S, M, L, XL, XXL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Товар 8 -->
-      <div class="product-card">
-        <div class="product-image-wrap">
-          <span class="product-badge">Новинка</span>
-          <svg class="tshirt-placeholder" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60 30 L30 60 L50 70 L45 160 H155 L150 70 L170 60 L140 30 Q120 45 100 45 Q80 45 60 30Z" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
-            <path d="M60 30 Q80 20 100 20 Q120 20 140 30" stroke="#d97706" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
-        <div class="product-info">
-          <div class="product-category">Базовая серия</div>
-          <div class="product-name">Янтарный свет</div>
-          <div class="product-meta">
-            <div class="product-colors">
-              <div class="color-dot" style="background:#f59e0b" title="Янтарный"></div>
-              <div class="color-dot" style="background:#fbbf24" title="Жёлтый"></div>
-              <div class="color-dot" style="background:#fde68a" title="Светло-жёлтый"></div>
-            </div>
-            <div class="product-sizes">S, M, L, XL</div>
-          </div>
-          <div class="product-footer">
-            <div class="product-price">1 490 ₽ <small>+ печать от 290 ₽</small></div>
-            <a href="constructor.html" class="btn btn-primary btn-sm">Создать</a>
-          </div>
+        <div class="product-service-info">
+          <h3>Выпускные ленты</h3>
+          <p>Создадим именные ленты для выпускного — с именем, классом или любой надписью</p>
+          <a href="order.html?product=ribbon" class="btn btn-accent">Заказать ленту</a>
         </div>
       </div>
 
