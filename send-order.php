@@ -217,7 +217,7 @@ try {
     $mail->SMTPAuth   = true;
 
     $mail->Username   = 'aidar.mukhitov@mail.ru';
-    $mail->Password   = 'Qf38rtO2y8LW95N3rHuZ';
+    $mail->Password   = 'password';
 
     $mail->Timeout    = 20;
     $mail->CharSet    = PHPMailer::CHARSET_UTF8;
